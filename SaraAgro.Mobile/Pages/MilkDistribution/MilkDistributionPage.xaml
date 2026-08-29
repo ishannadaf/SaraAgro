@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SaraAgro.Mobile.Pages.MilkDistribution.MilkDistributionPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Milk Distribution"
+    BackgroundColor="{AppThemeBinding Light=#F8FAF8, Dark=#0F1411}">
+
+    <ContentPage.Resources>
+
+        <!-- LABEL -->
+        <Style TargetType="Label">
+            <Setter Property="TextColor"
+                    Value="{AppThemeBinding Light=#141B2B, Dark=#F2F5F1}" />
+        </Style>
+
+        <!-- ENTRY -->
+        <Style TargetType="Entry">
+            <Setter Property="TextColor"
+                    Value="{AppThemeBinding Light=#141B2B, Dark=#F2F5F1}" />
+
+            <Setter Property="PlaceholderColor"
+                    Value="{AppThemeBinding Light=#7A827C, Dark=#89968D}" />
+
+            <Setter Property="BackgroundColor"
+                    Value="{AppThemeBinding Light=#FFFFFF, Dark=#18201B}" />
+        </Style>
+
+        <!-- PICKER -->
+        <Style TargetType="Picker">
+            <Setter Property="TextColor"
+                    Value="{AppThemeBinding Light=#141B2B, Dark=#F2F5F1}" />
+
+            <Setter Property="TitleColor"
+                    Value="{AppThemeBinding Light=#7A827C, Dark=#89968D}" />
+
+            <Setter Property="BackgroundColor"
+                    Value="{AppThemeBinding Light=#FFFFFF, Dark=#18201B}" />
+        </Style>
+
+        <!-- SEARCH BAR -->
+        <Style TargetType="SearchBar">
+            <Setter Property="TextColor"
+                    Value="{AppThemeBinding Light=#141B2B, Dark=#F2F5F1}" />
+
+            <Setter Property="PlaceholderColor"
+                    Value="{AppThemeBinding Light=#7A827C, Dark=#89968D}" />
+
+            <Setter Property="BackgroundColor"
+                    Value="{AppThemeBinding Light=#FFFFFF, Dark=#18201B}" />
+        </Style>
+
+        <!-- DATE PICKER -->
+        <Style TargetType="DatePicker">
+            <Setter Property="TextColor"
+                    Value="{AppThemeBinding Light=#141B2B, Dark=#F2F5F1}" />
+
+            <Setter Property="BackgroundColor"
+                    Value="{AppThemeBinding Light=#FFFFFF, Dark=#18201B}" />
+        </Style>
+
+    </ContentPage.Resources>
+
+
+    <Grid
+        RowDefinitions="Auto,Auto,Auto,*"
+        BackgroundColor="{AppThemeBinding Light=#F8FAF8, Dark=#0F1411}">
+
+
+        <!-- =====================================================
+             HEADER
+             ===================================================== -->
+
+        <Grid
+            Grid.Row="0"
+            Padding="18,14"
+            ColumnDefinitions="Auto,*,Auto">
+
+            <Button
+                Grid.Column="0"
+                Text="‹"
+                FontSize="32"
+                WidthRequest="44"
+                HeightRequest="44"
+                Padding="0"
+                BackgroundColor="Transparent"
+                TextColor="{AppThemeBinding Light=#141B2B, Dark=#F2F5F1}"
+                Clicked="BackClicked" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Spacing="1"
+                VerticalOptions="Center">
+
+                <Label
+                    Text="Milk Distribution"
+                    FontSize="21"
+                    FontAttributes="Bold" />
+
+                <Label
+                    Text="Daily collection"
+                    FontSize="11"
+                    Opacity="0.65" />
+
+            </VerticalStackLayout>
+
+            <Button
+                Grid.Column="2"
+                Text="+"
+                FontSize="24"
+                WidthRequest="44"
+                HeightRequest="44"
+                CornerRadius="12"
+                BackgroundColor="{AppThemeBinding Light=#004C22, Dark=#8BD79B}"
+                TextColor="{AppThemeBinding Light=#FFFFFF, Dark=#06210F}"
+                Clicked="AddDistributionClicked" />
+
+        </Grid>
+
+
+        <!-- =====================================================
+             DATE / SESSION
+             ===================================================== -->
+
+        <Border
+            Grid.Row="1"
+            Margin="16,0,16,10"
+            Padding="14"
+            StrokeThickness="1"
+            Stroke="{AppThemeBinding Light=#D8E0D8, Dark=#354239}"
+            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#18201B}">
+
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="16" />
+            </Border.StrokeShape>
+
+            <Grid
+                ColumnDefinitions="*,*"
+                ColumnSpacing="12">
+
+                <VerticalStackLayout
+                    Grid.Column="0"
+                    Spacing="4">
+
+                    <Label
+                        Text="Date"
+                        FontSize="10"
+                        FontAttributes="Bold"
+                        Opacity="0.65" />
+
+                    <DatePicker
+                        x:Name="DistributionDatePicker"
+                        Format="dd MMM yyyy"
+                        DateSelected="DistributionDateChanged" />
+
+                </VerticalStackLayout>
+
+
+                <VerticalStackLayout
+                    Grid.Column="1"
+                    Spacing="4">
+
+                    <Label
+                        Text="Session"
+                        FontSize="10"
+                        FontAttributes="Bold"
+                        Opacity="0.65" />
+
+                    <Picker
+                        x:Name="SessionPicker"
+                        Title="Session"
+                        SelectedIndexChanged="SessionChanged">
+
+                        <Picker.Items>
+                            <x:String>Morning</x:String>
+                            <x:String>Evening</x:String>
+                        </Picker.Items>
+
+                    </Picker>
+
+                </VerticalStackLayout>
+
+            </Grid>
+
+        </Border>
+
+
+        <!-- =====================================================
+             SUMMARY
+             ===================================================== -->
+
+        <ScrollView
+            Grid.Row="2"
+            Orientation="Horizontal"
+            HorizontalScrollBarVisibility="Never"
+            Margin="16,0,0,10">
+
+            <HorizontalStackLayout Spacing="10">
+
+
+                <!-- MORNING -->
+
+                <Border
+                    Padding="14,10"
+                    WidthRequest="145"
+                    StrokeThickness="0"
+                    BackgroundColor="{AppThemeBinding Light=#E6F4EA, Dark=#193522}">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="2">
+
+                        <Label
+                            Text="Morning"
+                            FontSize="10"
+                            Opacity="0.7" />
+
+                        <Label
+                            x:Name="MorningQuantityLabel"
+                            Text="0.00 L"
+                            FontSize="19"
+                            FontAttributes="Bold" />
+
+                        <Label
+                            x:Name="MorningAmountLabel"
+                            Text="₹0.00"
+                            FontSize="11"
+                            Opacity="0.75" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- EVENING -->
+
+                <Border
+                    Padding="14,10"
+                    WidthRequest="145"
+                    StrokeThickness="0"
+                    BackgroundColor="{AppThemeBinding Light=#EEF2FF, Dark=#1D2540}">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="2">
+
+                        <Label
+                            Text="Evening"
+                            FontSize="10"
+                            Opacity="0.7" />
+
+                        <Label
+                            x:Name="EveningQuantityLabel"
+                            Text="0.00 L"
+                            FontSize="19"
+                            FontAttributes="Bold" />
+
+                        <Label
+                            x:Name="EveningAmountLabel"
+                            Text="₹0.00"
+                            FontSize="11"
+                            Opacity="0.75" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- TOTAL -->
+
+                <Border
+                    Padding="14,10"
+                    WidthRequest="145"
+                    StrokeThickness="0"
+                    BackgroundColor="{AppThemeBinding Light=#FFF4DE, Dark=#3A2F18}">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="2">
+
+                        <Label
+                            Text="Total"
+                            FontSize="10"
+                            Opacity="0.7" />
+
+                        <Label
+                            x:Name="TotalQuantityLabel"
+                            Text="0.00 L"
+                            FontSize="19"
+                            FontAttributes="Bold" />
+
+                        <Label
+                            x:Name="TotalAmountLabel"
+                            Text="₹0.00"
+                            FontSize="11"
+                            Opacity="0.75" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+            </HorizontalStackLayout>
+
+        </ScrollView>
+
+
+        <!-- =====================================================
+             DISTRIBUTION LIST
+             ===================================================== -->
+
+        <Grid
+            Grid.Row="3"
+            RowDefinitions="Auto,*">
+
+
+            <!-- SEARCH -->
+
+            <Border
+                Grid.Row="0"
+                Margin="16,0,16,10"
+                Padding="12,4"
+                StrokeThickness="1"
+                Stroke="{AppThemeBinding Light=#D8E0D8, Dark=#354239}"
+                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#18201B}">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+
+                <SearchBar
+                    x:Name="SearchBar"
+                    Placeholder="Search customer code, name or mobile"
+                    BackgroundColor="Transparent"
+                    TextChanged="SearchTextChanged" />
+
+            </Border>
+
+
+            <!-- LIST -->
+
+            <RefreshView
+                Grid.Row="1"
+                x:Name="DistributionRefreshView"
+                Refreshing="RefreshViewRefreshing">
+
+                <ScrollView>
+
+                    <VerticalStackLayout
+                        x:Name="DistributionList"
+                        Padding="16,0,16,24"
+                        Spacing="10" />
+
+                </ScrollView>
+
+            </RefreshView>
+
+
+            <!-- EMPTY -->
+
+            <VerticalStackLayout
+                Grid.Row="1"
+                x:Name="EmptyState"
+                IsVisible="False"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Spacing="6">
+
+                <Label
+                    Text="No milk distribution found"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    HorizontalTextAlignment="Center" />
+
+                <Label
+                    Text="Add today's collection using +"
+                    FontSize="12"
+                    Opacity="0.65"
+                    HorizontalTextAlignment="Center" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

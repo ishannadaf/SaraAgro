@@ -1,0 +1,772 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="SaraAgro.Mobile.Pages.Billing.BillingPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Billing"
+    BackgroundColor="{AppThemeBinding Light=#F8FAF8, Dark=#0F1411}">
+
+    <ContentPage.Resources>
+
+        <!-- ================================================= -->
+        <!-- LABEL -->
+        <!-- ================================================= -->
+
+        <Style TargetType="Label">
+            <Setter
+                Property="TextColor"
+                Value="{AppThemeBinding
+                    Light=#141B2B,
+                    Dark=#F2F5F1}" />
+        </Style>
+
+        <!-- ================================================= -->
+        <!-- ENTRY -->
+        <!-- ================================================= -->
+
+        <Style TargetType="Entry">
+            <Setter
+                Property="TextColor"
+                Value="{AppThemeBinding
+                    Light=#141B2B,
+                    Dark=#F2F5F1}" />
+
+            <Setter
+                Property="PlaceholderColor"
+                Value="{AppThemeBinding
+                    Light=#7B8494,
+                    Dark=#8F9A92}" />
+        </Style>
+
+        <!-- ================================================= -->
+        <!-- DATE PICKER -->
+        <!-- ================================================= -->
+
+        <Style TargetType="DatePicker">
+            <Setter
+                Property="TextColor"
+                Value="{AppThemeBinding
+                    Light=#141B2B,
+                    Dark=#F2F5F1}" />
+        </Style>
+
+        <!-- ================================================= -->
+        <!-- BUTTON -->
+        <!-- ================================================= -->
+
+        <Style TargetType="Button">
+            <Setter
+                Property="TextColor"
+                Value="{AppThemeBinding
+                    Light=#FFFFFF,
+                    Dark=#06210F}" />
+
+            <Setter
+                Property="BackgroundColor"
+                Value="{AppThemeBinding
+                    Light=#004C22,
+                    Dark=#8BD79B}" />
+        </Style>
+
+    </ContentPage.Resources>
+
+
+    <Grid
+        RowDefinitions="Auto,*"
+        BackgroundColor="{AppThemeBinding
+            Light=#F8FAF8,
+            Dark=#0F1411}">
+
+        <!-- ================================================= -->
+        <!-- HEADER -->
+        <!-- ================================================= -->
+
+        <Grid
+            Grid.Row="0"
+            Padding="18,14"
+            ColumnDefinitions="Auto,*,Auto">
+
+            <!-- BACK -->
+
+            <Button
+                Grid.Column="0"
+                Text="‹"
+                FontSize="32"
+                WidthRequest="44"
+                HeightRequest="44"
+                Padding="0"
+                BackgroundColor="Transparent"
+                TextColor="{AppThemeBinding
+                    Light=#141B2B,
+                    Dark=#F2F5F1}"
+                Clicked="BackClicked" />
+
+            <!-- TITLE -->
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Spacing="1"
+                VerticalOptions="Center">
+
+                <Label
+                    Text="Billing"
+                    FontSize="21"
+                    FontAttributes="Bold" />
+
+                <Label
+                    Text="Customer bills &amp; payments"
+                    FontSize="11"
+                    Opacity="0.65" />
+
+            </VerticalStackLayout>
+
+            <!-- NEW BILL -->
+
+            <Button
+                Grid.Column="2"
+                Text="+"
+                FontSize="24"
+                WidthRequest="44"
+                HeightRequest="44"
+                CornerRadius="12"
+                Padding="0"
+                Clicked="GenerateBillClicked" />
+
+        </Grid>
+
+
+        <!-- ================================================= -->
+        <!-- MAIN CONTENT -->
+        <!-- ================================================= -->
+
+        <ScrollView
+            Grid.Row="1">
+
+            <VerticalStackLayout
+                Padding="16,0,16,30"
+                Spacing="14">
+
+
+                <!-- ================================================= -->
+                <!-- SEARCH CUSTOMER -->
+                <!-- ================================================= -->
+
+                <Border
+                    Padding="12,4"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding
+                        Light=#D8E0D8,
+                        Dark=#354239}"
+                    BackgroundColor="{AppThemeBinding
+                        Light=#FFFFFF,
+                        Dark=#18201B}">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="14" />
+                    </Border.StrokeShape>
+
+                    <SearchBar
+                        x:Name="CustomerSearchBar"
+                        Placeholder="Search customer code, name or mobile"
+                        BackgroundColor="Transparent"
+                        TextChanged="CustomerSearchTextChanged" />
+
+                </Border>
+
+
+                <!-- ================================================= -->
+                <!-- CUSTOMER SEARCH RESULTS -->
+                <!-- ================================================= -->
+
+                <Border
+                    x:Name="CustomerSearchResultsBorder"
+                    IsVisible="False"
+                    Padding="0"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding
+                        Light=#D8E0D8,
+                        Dark=#354239}"
+                    BackgroundColor="{AppThemeBinding
+                        Light=#FFFFFF,
+                        Dark=#18201B}">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="14" />
+                    </Border.StrokeShape>
+
+                    <CollectionView
+                        x:Name="CustomerSearchResults"
+                        SelectionMode="Single"
+                        SelectionChanged="CustomerSelected"
+                        MaximumHeightRequest="250">
+
+                        <CollectionView.ItemTemplate>
+
+                            <DataTemplate>
+
+                                <Grid
+                                    Padding="14,12"
+                                    ColumnDefinitions="*,Auto">
+
+                                    <VerticalStackLayout
+                                        Grid.Column="0"
+                                        Spacing="2">
+
+                                        <Label
+                                            Text="{Binding Name}"
+                                            FontSize="15"
+                                            FontAttributes="Bold" />
+
+                                        <Label
+                                            Text="{Binding Details}"
+                                            FontSize="11"
+                                            Opacity="0.65" />
+
+                                    </VerticalStackLayout>
+
+                                    <Label
+                                        Grid.Column="1"
+                                        Text="›"
+                                        FontSize="22"
+                                        VerticalOptions="Center"
+                                        Opacity="0.55" />
+
+                                </Grid>
+
+                            </DataTemplate>
+
+                        </CollectionView.ItemTemplate>
+
+                    </CollectionView>
+
+                </Border>
+
+
+                <!-- ================================================= -->
+                <!-- SELECTED CUSTOMER -->
+                <!-- ================================================= -->
+
+                <Border
+                    x:Name="SelectedCustomerCard"
+                    IsVisible="False"
+                    Padding="14"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding
+                        Light=#C9DCCB,
+                        Dark=#38513E}"
+                    BackgroundColor="{AppThemeBinding
+                        Light=#EAF5EC,
+                        Dark=#193522}">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <Grid
+                        ColumnDefinitions="*,Auto">
+
+                        <VerticalStackLayout
+                            Spacing="3">
+
+                            <Label
+                                Text="Selected Customer"
+                                FontSize="10"
+                                FontAttributes="Bold"
+                                Opacity="0.65" />
+
+                            <Label
+                                x:Name="SelectedCustomerNameLabel"
+                                FontSize="16"
+                                FontAttributes="Bold" />
+
+                            <Label
+                                x:Name="SelectedCustomerDetailsLabel"
+                                FontSize="11"
+                                Opacity="0.7" />
+
+                        </VerticalStackLayout>
+
+                        <Button
+                            Grid.Column="1"
+                            Text="×"
+                            WidthRequest="40"
+                            HeightRequest="40"
+                            CornerRadius="12"
+                            Padding="0"
+                            BackgroundColor="Transparent"
+                            TextColor="{AppThemeBinding
+                                Light=#004C22,
+                                Dark=#8BD79B}"
+                            Clicked="ClearCustomerClicked" />
+
+                    </Grid>
+
+                </Border>
+
+
+                <!-- ================================================= -->
+                <!-- BILLING PERIOD -->
+                <!-- ================================================= -->
+
+                <Border
+                    Padding="14"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding
+                        Light=#D8E0D8,
+                        Dark=#354239}"
+                    BackgroundColor="{AppThemeBinding
+                        Light=#FFFFFF,
+                        Dark=#18201B}">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout
+                        Spacing="12">
+
+                        <Label
+                            Text="Billing Period"
+                            FontSize="13"
+                            FontAttributes="Bold" />
+
+                        <Grid
+                            ColumnDefinitions="*,*"
+                            ColumnSpacing="12">
+
+                            <VerticalStackLayout
+                                Grid.Column="0"
+                                Spacing="4">
+
+                                <Label
+                                    Text="From"
+                                    FontSize="10"
+                                    Opacity="0.65" />
+
+                                <DatePicker
+                                    x:Name="FromDatePicker"
+                                    Format="dd MMM yyyy" />
+
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout
+                                Grid.Column="1"
+                                Spacing="4">
+
+                                <Label
+                                    Text="To"
+                                    FontSize="10"
+                                    Opacity="0.65" />
+
+                                <DatePicker
+                                    x:Name="ToDatePicker"
+                                    Format="dd MMM yyyy" />
+
+                            </VerticalStackLayout>
+
+                        </Grid>
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- ================================================= -->
+                <!-- GENERATE BILL -->
+                <!-- ================================================= -->
+
+                <Button
+                    x:Name="GenerateBillButton"
+                    Text="Generate Bill"
+                    HeightRequest="50"
+                    CornerRadius="14"
+                    FontAttributes="Bold"
+                    Clicked="GenerateBillClicked" />
+
+
+                <!-- ================================================= -->
+                <!-- CURRENT BILL -->
+                <!-- ================================================= -->
+
+                <Border
+                    x:Name="CurrentBillCard"
+                    IsVisible="False"
+                    Padding="16"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding
+                        Light=#D8E0D8,
+                        Dark=#354239}"
+                    BackgroundColor="{AppThemeBinding
+                        Light=#FFFFFF,
+                        Dark=#18201B}">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="18" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout
+                        Spacing="12">
+
+                        <!-- BILL HEADER -->
+
+                        <Grid
+                            ColumnDefinitions="*,Auto">
+
+                            <VerticalStackLayout
+                                Grid.Column="0"
+                                Spacing="2">
+
+                                <Label
+                                    Text="Current Bill"
+                                    FontSize="10"
+                                    FontAttributes="Bold"
+                                    Opacity="0.65" />
+
+                                <Label
+                                    x:Name="BillNumberLabel"
+                                    FontSize="17"
+                                    FontAttributes="Bold" />
+
+                                <Label
+                                    x:Name="BillPeriodLabel"
+                                    FontSize="11"
+                                    Opacity="0.65" />
+
+                            </VerticalStackLayout>
+
+                            <Border
+                                Grid.Column="1"
+                                Padding="10,6"
+                                BackgroundColor="{AppThemeBinding
+                                    Light=#E6F4EA,
+                                    Dark=#193522}">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle
+                                        CornerRadius="10" />
+                                </Border.StrokeShape>
+
+                                <Label
+                                    x:Name="BillStatusLabel"
+                                    FontSize="11"
+                                    FontAttributes="Bold" />
+
+                            </Border>
+
+                        </Grid>
+
+
+                        <!-- AMOUNTS -->
+
+                        <Grid
+                            RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                            ColumnDefinitions="*,Auto"
+                            RowSpacing="8">
+
+                            <Label
+                                Grid.Row="0"
+                                Text="Milk Amount"
+                                FontSize="12"
+                                Opacity="0.7" />
+
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                x:Name="MilkAmountLabel"
+                                Text="₹0.00"
+                                FontAttributes="Bold" />
+
+                            <Label
+                                Grid.Row="1"
+                                Text="Previous Outstanding"
+                                FontSize="12"
+                                Opacity="0.7" />
+
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                x:Name="PreviousOutstandingLabel"
+                                Text="₹0.00"
+                                FontAttributes="Bold" />
+
+                            <BoxView
+                                Grid.Row="2"
+                                Grid.ColumnSpan="2"
+                                HeightRequest="1"
+                                Color="{AppThemeBinding
+                                    Light=#D8E0D8,
+                                    Dark=#354239}" />
+
+                            <Label
+                                Grid.Row="3"
+                                Text="Total Payable"
+                                FontSize="13"
+                                FontAttributes="Bold" />
+
+                            <Label
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                x:Name="TotalPayableLabel"
+                                Text="₹0.00"
+                                FontSize="16"
+                                FontAttributes="Bold" />
+
+                            <Label
+                                Grid.Row="4"
+                                Text="Paid"
+                                FontSize="12"
+                                Opacity="0.7" />
+
+                            <Label
+                                Grid.Row="4"
+                                Grid.Column="1"
+                                x:Name="PaidAmountLabel"
+                                Text="₹0.00"
+                                FontAttributes="Bold" />
+
+                        </Grid>
+
+
+                        <!-- BALANCE -->
+
+                        <Border
+                            Padding="14"
+                            StrokeThickness="0"
+                            BackgroundColor="{AppThemeBinding
+                                Light=#FFF4DE,
+                                Dark=#3A2F18}">
+
+                            <Border.StrokeShape>
+                                <RoundRectangle
+                                    CornerRadius="14" />
+                            </Border.StrokeShape>
+
+                            <Grid
+                                ColumnDefinitions="*,Auto">
+
+                                <VerticalStackLayout
+                                    Spacing="2">
+
+                                    <Label
+                                        Text="Outstanding Balance"
+                                        FontSize="10"
+                                        Opacity="0.7" />
+
+                                    <Label
+                                        x:Name="BalanceLabel"
+                                        Text="₹0.00"
+                                        FontSize="22"
+                                        FontAttributes="Bold" />
+
+                                </VerticalStackLayout>
+
+                                <Button
+                                    Grid.Column="1"
+                                    Text="Add Payment"
+                                    HeightRequest="44"
+                                    CornerRadius="12"
+                                    Padding="14,0"
+                                    Clicked="AddPaymentClicked" />
+
+                            </Grid>
+
+                        </Border>
+
+
+                        <!-- PAYMENT HISTORY -->
+
+                        <Button
+                            Text="View Payment History"
+                            HeightRequest="42"
+                            CornerRadius="12"
+                            BackgroundColor="Transparent"
+                            TextColor="{AppThemeBinding
+                                Light=#004C22,
+                                Dark=#8BD79B}"
+                            Clicked="ViewPaymentHistoryClicked" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- ================================================= -->
+                <!-- BILL HISTORY -->
+                <!-- ================================================= -->
+
+                <Label
+                    Text="Bill History"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    Margin="2,6,0,0" />
+
+                <RefreshView
+                    x:Name="BillsRefreshView"
+                    Refreshing="BillsRefreshRequested">
+
+                    <CollectionView
+                        x:Name="BillsCollection"
+                        SelectionMode="Single"
+                        SelectionChanged="BillSelected">
+
+                        <CollectionView.EmptyView>
+
+                            <VerticalStackLayout
+                                Padding="20"
+                                Spacing="5"
+                                HorizontalOptions="Center">
+
+                                <Label
+                                    Text="No bills found"
+                                    FontSize="15"
+                                    FontAttributes="Bold"
+                                    HorizontalTextAlignment="Center" />
+
+                                <Label
+                                    Text="Generate a bill for the selected customer."
+                                    FontSize="11"
+                                    Opacity="0.65"
+                                    HorizontalTextAlignment="Center" />
+
+                            </VerticalStackLayout>
+
+                        </CollectionView.EmptyView>
+
+                        <CollectionView.ItemTemplate>
+
+                            <DataTemplate>
+
+                                <Border
+                                    Margin="0,0,0,10"
+                                    Padding="14"
+                                    StrokeThickness="1"
+                                    Stroke="{AppThemeBinding
+                                        Light=#D8E0D8,
+                                        Dark=#354239}"
+                                    BackgroundColor="{AppThemeBinding
+                                        Light=#FFFFFF,
+                                        Dark=#18201B}">
+
+                                    <Border.StrokeShape>
+                                        <RoundRectangle
+                                            CornerRadius="16" />
+                                    </Border.StrokeShape>
+
+                                    <Grid
+                                        ColumnDefinitions="*,Auto"
+                                        RowDefinitions="Auto,Auto,Auto">
+
+                                        <VerticalStackLayout
+                                            Grid.Row="0"
+                                            Grid.Column="0"
+                                            Spacing="2">
+
+                                            <Label
+                                                Text="{Binding BillNumber}"
+                                                FontSize="14"
+                                                FontAttributes="Bold" />
+
+                                            <Label
+                                                Text="{Binding CustomerName}"
+                                                FontSize="11"
+                                                Opacity="0.65" />
+
+                                        </VerticalStackLayout>
+
+                                        <Label
+                                            Grid.Row="0"
+                                            Grid.Column="1"
+                                            Text="{Binding Status}"
+                                            FontSize="10"
+                                            FontAttributes="Bold"
+                                            HorizontalOptions="End" />
+
+                                        <Label
+                                            Grid.Row="1"
+                                            Grid.ColumnSpan="2"
+                                            Text="{Binding PeriodText}"
+                                            FontSize="11"
+                                            Opacity="0.65"
+                                            Margin="0,8,0,0" />
+
+                                        <Grid
+                                            Grid.Row="2"
+                                            Grid.ColumnSpan="2"
+                                            ColumnDefinitions="*,*,*"
+                                            Margin="0,10,0,0">
+
+                                            <VerticalStackLayout
+                                                Grid.Column="0"
+                                                Spacing="1">
+
+                                                <Label
+                                                    Text="Payable"
+                                                    FontSize="9"
+                                                    Opacity="0.6" />
+
+                                                <Label
+                                                    Text="{Binding TotalPayableText}"
+                                                    FontSize="13"
+                                                    FontAttributes="Bold" />
+
+                                            </VerticalStackLayout>
+
+                                            <VerticalStackLayout
+                                                Grid.Column="1"
+                                                Spacing="1">
+
+                                                <Label
+                                                    Text="Paid"
+                                                    FontSize="9"
+                                                    Opacity="0.6" />
+
+                                                <Label
+                                                    Text="{Binding PaidAmountText}"
+                                                    FontSize="13"
+                                                    FontAttributes="Bold" />
+
+                                            </VerticalStackLayout>
+
+                                            <VerticalStackLayout
+                                                Grid.Column="2"
+                                                Spacing="1">
+
+                                                <Label
+                                                    Text="Balance"
+                                                    FontSize="9"
+                                                    Opacity="0.6" />
+
+                                                <Label
+                                                    Text="{Binding BalanceAmountText}"
+                                                    FontSize="13"
+                                                    FontAttributes="Bold" />
+
+                                            </VerticalStackLayout>
+
+                                        </Grid>
+
+                                    </Grid>
+
+                                </Border>
+
+                            </DataTemplate>
+
+                        </CollectionView.ItemTemplate>
+
+                    </CollectionView>
+
+                </RefreshView>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>

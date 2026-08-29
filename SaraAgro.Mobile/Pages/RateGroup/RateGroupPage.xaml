@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="SaraAgro.Mobile.Pages.RateGroup.RateGroupPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Rate Groups"
+    BackgroundColor="{AppThemeBinding Light=#F7FAF7, Dark=#0F1411}">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+        <!-- HEADER -->
+        <Grid
+            Grid.Row="0"
+            Padding="20,18,20,12"
+            ColumnDefinitions="Auto,*,Auto">
+
+            <Button
+                Grid.Column="0"
+                Text="‹"
+                FontSize="30"
+                WidthRequest="42"
+                HeightRequest="42"
+                Padding="0"
+                BackgroundColor="Transparent"
+                TextColor="{AppThemeBinding Light=#141B2B, Dark=#F2F5F1}"
+                Clicked="BackClicked" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Spacing="2"
+                VerticalOptions="Center">
+
+                <Label
+                    Text="Rate Groups"
+                    FontSize="24"
+                    FontAttributes="Bold"
+                    TextColor="{AppThemeBinding Light=#141B2B, Dark=#F2F5F1}" />
+
+                <Label
+                    x:Name="RateGroupCountLabel"
+                    Text="0 groups"
+                    FontSize="12"
+                    TextColor="{AppThemeBinding Light=#707A6F, Dark=#9CA89F}" />
+
+            </VerticalStackLayout>
+
+            <Button
+                Grid.Column="2"
+                Text="⋮"
+                FontSize="24"
+                WidthRequest="42"
+                HeightRequest="42"
+                Padding="0"
+                BackgroundColor="Transparent"
+                TextColor="{AppThemeBinding Light=#141B2B, Dark=#F2F5F1}"
+                Clicked="MoreClicked" />
+
+        </Grid>
+
+
+        <!-- SEARCH -->
+        <Border
+            Grid.Row="1"
+            Margin="20,4,20,12"
+            Padding="14,0"
+            HeightRequest="48"
+            StrokeThickness="1"
+            Stroke="{AppThemeBinding Light=#D8E0D8, Dark=#354239}"
+            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#18201B}">
+
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="14" />
+            </Border.StrokeShape>
+
+            <Grid ColumnDefinitions="Auto,*">
+
+                <Label
+                    Text="⌕"
+                    FontSize="22"
+                    VerticalOptions="Center"
+                    TextColor="{AppThemeBinding Light=#707A6F, Dark=#9CA89F}" />
+
+                <Entry
+                    x:Name="SearchEntry"
+                    Grid.Column="1"
+                    Placeholder="Search rate groups..."
+                    FontSize="14"
+                    ClearButtonVisibility="WhileEditing"
+                    BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light=#141B2B, Dark=#F2F5F1}"
+                    PlaceholderColor="{AppThemeBinding Light=#8A938A, Dark=#78847B}"
+                    TextChanged="SearchTextChanged" />
+
+            </Grid>
+
+        </Border>
+
+
+        <!-- CONTENT -->
+        <Grid
+            Grid.Row="2"
+            Padding="20,0">
+
+            <ScrollView>
+
+                <VerticalStackLayout
+                    x:Name="RateGroupList"
+                    Spacing="12"
+                    Padding="0,4,0,100" />
+
+            </ScrollView>
+
+
+            <!-- EMPTY STATE -->
+            <VerticalStackLayout
+                x:Name="EmptyState"
+                IsVisible="False"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Spacing="8">
+
+                <Label
+                    Text="No rate groups found"
+                    FontSize="17"
+                    FontAttributes="Bold"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{AppThemeBinding Light=#141B2B, Dark=#F2F5F1}" />
+
+                <Label
+                    Text="Add your first route or area."
+                    FontSize="13"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{AppThemeBinding Light=#707A6F, Dark=#9CA89F}" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+
+        <!-- BOTTOM NAV -->
+        <Grid
+            Grid.Row="3"
+            HeightRequest="72"
+            Padding="12,6"
+            ColumnDefinitions="*,*,*,*,*"
+            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#141A16}">
+
+            <VerticalStackLayout
+                Grid.Column="0"
+                HorizontalOptions="Center"
+                Spacing="2">
+
+                <Label
+                    Text="⌂"
+                    FontSize="22"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{AppThemeBinding Light=#707A6F, Dark=#9CA89F}" />
+
+                <Label
+                    Text="Home"
+                    FontSize="10"
+                    TextColor="{AppThemeBinding Light=#707A6F, Dark=#9CA89F}" />
+
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="HomeTapped" />
+                </VerticalStackLayout.GestureRecognizers>
+
+            </VerticalStackLayout>
+
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                HorizontalOptions="Center"
+                Spacing="2">
+
+                <Label
+                    Text="●"
+                    FontSize="20"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{AppThemeBinding Light=#004C22, Dark=#8BD79B}" />
+
+                <Label
+                    Text="Rates"
+                    FontSize="10"
+                    FontAttributes="Bold"
+                    TextColor="{AppThemeBinding Light=#004C22, Dark=#8BD79B}" />
+
+            </VerticalStackLayout>
+
+
+            <VerticalStackLayout
+                Grid.Column="2"
+                HorizontalOptions="Center"
+                Spacing="2">
+
+                <Label
+                    Text="♙"
+                    FontSize="21"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{AppThemeBinding Light=#707A6F, Dark=#9CA89F}" />
+
+                <Label
+                    Text="Customers"
+                    FontSize="10"
+                    TextColor="{AppThemeBinding Light=#707A6F, Dark=#9CA89F}" />
+
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="CustomersTapped" />
+                </VerticalStackLayout.GestureRecognizers>
+
+            </VerticalStackLayout>
+
+
+            <VerticalStackLayout
+                Grid.Column="3"
+                HorizontalOptions="Center"
+                Spacing="2">
+
+                <Label
+                    Text="◷"
+                    FontSize="21"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{AppThemeBinding Light=#707A6F, Dark=#9CA89F}" />
+
+                <Label
+                    Text="Distribution"
+                    FontSize="10"
+                    TextColor="{AppThemeBinding Light=#707A6F, Dark=#9CA89F}" />
+
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="DistributionTapped" />
+                </VerticalStackLayout.GestureRecognizers>
+
+            </VerticalStackLayout>
+
+
+            <VerticalStackLayout
+                Grid.Column="4"
+                HorizontalOptions="Center"
+                Spacing="2">
+
+                <Label
+                    Text="⋯"
+                    FontSize="22"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{AppThemeBinding Light=#707A6F, Dark=#9CA89F}" />
+
+                <Label
+                    Text="More"
+                    FontSize="10"
+                    TextColor="{AppThemeBinding Light=#707A6F, Dark=#9CA89F}" />
+
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="MoreClicked" />
+                </VerticalStackLayout.GestureRecognizers>
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+
+        <!-- FLOATING ADD BUTTON -->
+        <Border
+            Grid.Row="2"
+            HorizontalOptions="End"
+            VerticalOptions="End"
+            Margin="0,0,22,20"
+            WidthRequest="58"
+            HeightRequest="58"
+            StrokeThickness="0"
+            BackgroundColor="{AppThemeBinding Light=#004C22, Dark=#8BD79B}">
+
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="29" />
+            </Border.StrokeShape>
+
+            <Label
+                Text="+"
+                FontSize="30"
+                FontAttributes="Bold"
+                HorizontalTextAlignment="Center"
+                VerticalTextAlignment="Center"
+                TextColor="{AppThemeBinding Light=#FFFFFF, Dark=#06210F}" />
+
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="AddRateGroupTapped" />
+            </Border.GestureRecognizers>
+
+        </Border>
+
+    </Grid>
+
+</ContentPage>

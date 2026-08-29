@@ -1,0 +1,965 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="SaraAgro.Mobile.Pages.Authentication.SignupPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Shell.NavBarIsVisible="False"
+    NavigationPage.HasNavigationBar="False"
+    BackgroundColor="{AppThemeBinding Light=#F9F9FF, Dark=#0F1411}">
+
+    <ContentPage.Resources>
+
+        <!-- =========================================================
+             COLORS
+        ========================================================== -->
+
+        <Color x:Key="PrimaryLight">#004C22</Color>
+        <Color x:Key="PrimaryDark">#8BD79B</Color>
+
+        <Color x:Key="CardLight">#FFFFFF</Color>
+        <Color x:Key="CardDark">#18201B</Color>
+
+        <Color x:Key="InputLight">#F7F8FC</Color>
+        <Color x:Key="InputDark">#202923</Color>
+
+        <Color x:Key="TextLight">#141B2B</Color>
+        <Color x:Key="TextDark">#F2F5F1</Color>
+
+        <Color x:Key="SecondaryLight">#404940</Color>
+        <Color x:Key="SecondaryDark">#C9D1CA</Color>
+
+        <Color x:Key="MutedLight">#707A6F</Color>
+        <Color x:Key="MutedDark">#9CA89F</Color>
+
+        <Color x:Key="BorderLight">#BFC9BD</Color>
+        <Color x:Key="BorderDark">#3C4940</Color>
+
+        <Color x:Key="ErrorLight">#BA1A1A</Color>
+        <Color x:Key="ErrorDark">#FFB4AB</Color>
+
+        <Color x:Key="SuccessLight">#16803C</Color>
+        <Color x:Key="SuccessDark">#8BD79B</Color>
+
+
+        <!-- =========================================================
+             LABEL STYLE
+        ========================================================== -->
+
+        <Style
+            x:Key="SignupLabelStyle"
+            TargetType="Label">
+
+            <Setter
+                Property="FontFamily"
+                Value="OpenSansRegular" />
+
+            <Setter
+                Property="FontSize"
+                Value="12" />
+
+            <Setter
+                Property="FontAttributes"
+                Value="Bold" />
+
+            <Setter
+                Property="TextColor"
+                Value="{AppThemeBinding
+                    Light={StaticResource SecondaryLight},
+                    Dark={StaticResource SecondaryDark}}" />
+
+        </Style>
+
+
+        <!-- =========================================================
+             ENTRY STYLE
+        ========================================================== -->
+
+        <Style
+            x:Key="SignupEntryStyle"
+            TargetType="Entry">
+
+            <Setter
+                Property="HeightRequest"
+                Value="54" />
+
+            <Setter
+                Property="FontFamily"
+                Value="OpenSansRegular" />
+
+            <Setter
+                Property="FontSize"
+                Value="14" />
+
+            <Setter
+                Property="TextColor"
+                Value="{AppThemeBinding
+                    Light={StaticResource TextLight},
+                    Dark={StaticResource TextDark}}" />
+
+            <Setter
+                Property="PlaceholderColor"
+                Value="{AppThemeBinding
+                    Light={StaticResource MutedLight},
+                    Dark={StaticResource MutedDark}}" />
+
+            <Setter
+                Property="BackgroundColor"
+                Value="Transparent" />
+
+            <Setter
+                Property="ClearButtonVisibility"
+                Value="Never" />
+
+        </Style>
+
+    </ContentPage.Resources>
+
+
+    <!-- =============================================================
+         MAIN PAGE
+    ============================================================= -->
+
+    <Grid>
+
+        <!-- Background -->
+
+        <Grid.Background>
+
+            <LinearGradientBrush
+                StartPoint="0,0"
+                EndPoint="1,1">
+
+                <GradientStop
+                    Offset="0"
+                    Color="{AppThemeBinding
+                        Light=#FCF9F1,
+                        Dark=#101811}" />
+
+                <GradientStop
+                    Offset="1"
+                    Color="{AppThemeBinding
+                        Light=#F1F3FF,
+                        Dark=#111827}" />
+
+            </LinearGradientBrush>
+
+        </Grid.Background>
+
+
+        <!-- =========================================================
+             SCROLL VIEW
+        ========================================================== -->
+
+        <ScrollView
+            VerticalScrollBarVisibility="Never">
+
+            <VerticalStackLayout
+                Padding="16,24,16,24"
+                Spacing="0">
+
+
+                <!-- =================================================
+                     HEADER
+                ================================================== -->
+
+                <Grid
+                    ColumnDefinitions="48,*,48"
+                    Margin="0,0,0,20">
+
+                    <!-- Back -->
+
+                    <Button
+                        Grid.Column="0"
+                        Text="‹"
+                        FontSize="32"
+                        Padding="0"
+                        WidthRequest="44"
+                        HeightRequest="44"
+                        CornerRadius="22"
+                        BackgroundColor="{AppThemeBinding
+                            Light=#FFFFFF,
+                            Dark=#18201B}"
+                        TextColor="{AppThemeBinding
+                            Light={StaticResource TextLight},
+                            Dark={StaticResource TextDark}}"
+                        Clicked="BackClicked" />
+
+
+                    <!-- Header title -->
+
+                    <VerticalStackLayout
+                        Grid.Column="1"
+                        Spacing="2"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+
+                        <Label
+                            Text="Request Registration"
+                            FontFamily="OpenSansSemibold"
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            HorizontalTextAlignment="Center"
+                            TextColor="{AppThemeBinding
+                                Light={StaticResource TextLight},
+                                Dark={StaticResource TextDark}}" />
+
+                        <Label
+                            Text="Set up your dairy business"
+                            FontFamily="OpenSansRegular"
+                            FontSize="11"
+                            HorizontalTextAlignment="Center"
+                            TextColor="{AppThemeBinding
+                                Light={StaticResource MutedLight},
+                                Dark={StaticResource MutedDark}}" />
+
+                    </VerticalStackLayout>
+
+                </Grid>
+
+
+                <!-- =================================================
+                     BRAND ICON
+                ================================================== -->
+
+                <Border
+                    WidthRequest="56"
+                    HeightRequest="56"
+                    HorizontalOptions="Center"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 28"
+                    BackgroundColor="{AppThemeBinding
+                        Light={StaticResource PrimaryLight},
+                        Dark={StaticResource PrimaryDark}}"
+                    Margin="0,0,0,12">
+
+                    <Label
+                        Text="✦"
+                        FontSize="28"
+                        HorizontalTextAlignment="Center"
+                        VerticalTextAlignment="Center"
+                        TextColor="{AppThemeBinding
+                            Light=#FFFFFF,
+                            Dark=#06210F}" />
+
+                </Border>
+
+
+                <!-- =================================================
+                     INTRO
+                ================================================== -->
+
+                <VerticalStackLayout
+                    Spacing="4"
+                    HorizontalOptions="Center"
+                    Margin="0,0,0,22">
+
+                    <Label
+                        Text="Welcome to Ratif"
+                        FontFamily="OpenSansSemibold"
+                        FontAttributes="Bold"
+                        FontSize="22"
+                        HorizontalTextAlignment="Center"
+                        TextColor="{AppThemeBinding
+                            Light={StaticResource PrimaryLight},
+                            Dark={StaticResource PrimaryDark}}" />
+
+                    <Label
+                        Text="Tell us about your dairy business"
+                        FontFamily="OpenSansRegular"
+                        FontSize="13"
+                        HorizontalTextAlignment="Center"
+                        TextColor="{AppThemeBinding
+                            Light={StaticResource SecondaryLight},
+                            Dark={StaticResource SecondaryDark}}" />
+
+                </VerticalStackLayout>
+
+
+                <!-- =================================================
+                     FORM CARD
+                ================================================== -->
+
+                <Border
+                    BackgroundColor="{AppThemeBinding
+                        Light={StaticResource CardLight},
+                        Dark={StaticResource CardDark}}"
+                    Stroke="{AppThemeBinding
+                        Light={StaticResource BorderLight},
+                        Dark={StaticResource BorderDark}}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="20">
+
+                    <VerticalStackLayout
+                        Spacing="0">
+
+
+                        <!-- =========================================
+                             BUSINESS NAME
+                        ========================================== -->
+
+                        <VerticalStackLayout
+                            Spacing="6"
+                            Margin="0,0,0,16">
+
+                            <Label
+                                Text="Dairy / Business Name"
+                                Style="{StaticResource SignupLabelStyle}" />
+
+                            <Border
+                                HeightRequest="54"
+                                BackgroundColor="{AppThemeBinding
+                                    Light={StaticResource InputLight},
+                                    Dark={StaticResource InputDark}}"
+                                Stroke="{AppThemeBinding
+                                    Light={StaticResource BorderLight},
+                                    Dark={StaticResource BorderDark}}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="12,0">
+
+                                <Grid
+                                    ColumnDefinitions="30,*">
+
+                                    <Label
+                                        Grid.Column="0"
+                                        Text="⌂"
+                                        FontSize="20"
+                                        VerticalTextAlignment="Center"
+                                        HorizontalTextAlignment="Center"
+                                        TextColor="{AppThemeBinding
+                                            Light={StaticResource MutedLight},
+                                            Dark={StaticResource MutedDark}}" />
+
+                                    <Entry
+                                        x:Name="BusinessNameEntry"
+                                        Grid.Column="1"
+                                        Style="{StaticResource SignupEntryStyle}"
+                                        Placeholder="Enter dairy or business name"
+                                        ReturnType="Next" />
+
+                                </Grid>
+
+                            </Border>
+
+                        </VerticalStackLayout>
+
+
+                        <!-- =========================================
+                             OWNER NAME
+                        ========================================== -->
+
+                        <VerticalStackLayout
+                            Spacing="6"
+                            Margin="0,0,0,16">
+
+                            <Label
+                                Text="Owner Name"
+                                Style="{StaticResource SignupLabelStyle}" />
+
+                            <Border
+                                HeightRequest="54"
+                                BackgroundColor="{AppThemeBinding
+                                    Light={StaticResource InputLight},
+                                    Dark={StaticResource InputDark}}"
+                                Stroke="{AppThemeBinding
+                                    Light={StaticResource BorderLight},
+                                    Dark={StaticResource BorderDark}}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="12,0">
+
+                                <Grid
+                                    ColumnDefinitions="30,*">
+
+                                    <Label
+                                        Grid.Column="0"
+                                        Text="●"
+                                        FontSize="16"
+                                        VerticalTextAlignment="Center"
+                                        HorizontalTextAlignment="Center"
+                                        TextColor="{AppThemeBinding
+                                            Light={StaticResource MutedLight},
+                                            Dark={StaticResource MutedDark}}" />
+
+                                    <Entry
+                                        x:Name="OwnerNameEntry"
+                                        Grid.Column="1"
+                                        Style="{StaticResource SignupEntryStyle}"
+                                        Placeholder="Enter owner's full name"
+                                        ReturnType="Next" />
+
+                                </Grid>
+
+                            </Border>
+
+                        </VerticalStackLayout>
+
+
+                        <!-- =========================================
+                             MOBILE NUMBER
+                        ========================================== -->
+
+                        <VerticalStackLayout
+                            Spacing="6"
+                            Margin="0,0,0,16">
+
+                            <Label
+                                Text="Mobile Number"
+                                Style="{StaticResource SignupLabelStyle}" />
+
+                            <Border
+                                HeightRequest="54"
+                                BackgroundColor="{AppThemeBinding
+                                    Light={StaticResource InputLight},
+                                    Dark={StaticResource InputDark}}"
+                                Stroke="{AppThemeBinding
+                                    Light={StaticResource BorderLight},
+                                    Dark={StaticResource BorderDark}}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="12,0">
+
+                                <Grid
+                                    ColumnDefinitions="30,*,Auto">
+
+                                    <Label
+                                        Grid.Column="0"
+                                        Text="▯"
+                                        FontSize="20"
+                                        VerticalTextAlignment="Center"
+                                        HorizontalTextAlignment="Center"
+                                        TextColor="{AppThemeBinding
+                                            Light={StaticResource MutedLight},
+                                            Dark={StaticResource MutedDark}}" />
+
+                                    <Entry
+                                        x:Name="MobileNumberEntry"
+                                        Grid.Column="1"
+                                        Style="{StaticResource SignupEntryStyle}"
+                                        Placeholder="Enter 10-digit mobile number"
+                                        Keyboard="Telephone"
+                                        MaxLength="10"
+                                        ReturnType="Next" />
+
+                                    <Button
+                                        x:Name="SendOtpButton"
+                                        Grid.Column="2"
+                                        Text="Send OTP"
+                                        BackgroundColor="Transparent"
+                                        Padding="4,0"
+                                        HeightRequest="44"
+                                        FontFamily="OpenSansSemibold"
+                                        FontSize="11"
+                                        FontAttributes="Bold"
+                                        TextColor="{AppThemeBinding
+                                            Light={StaticResource PrimaryLight},
+                                            Dark={StaticResource PrimaryDark}}"
+                                        Clicked="SendOtpClicked" />
+
+                                </Grid>
+
+                            </Border>
+
+
+                            <!-- =====================================
+                                 OTP
+                            ====================================== -->
+
+                            <VerticalStackLayout
+                                x:Name="OtpContainer"
+                                IsVisible="False"
+                                Spacing="6"
+                                Margin="0,8,0,0">
+
+                                <Grid
+                                    ColumnDefinitions="*,Auto">
+
+                                    <Label
+                                        Grid.Column="0"
+                                        Text="Enter OTP"
+                                        Style="{StaticResource SignupLabelStyle}" />
+
+                                    <!-- Development only -->
+                                    <Label
+                                        Grid.Column="1"
+                                        Text="OTP: 3777"
+                                        FontSize="10"
+                                        FontAttributes="Bold"
+                                        TextColor="{AppThemeBinding
+                                            Light={StaticResource PrimaryLight},
+                                            Dark={StaticResource PrimaryDark}}" />
+
+                                </Grid>
+
+
+                                <Border
+                                    HeightRequest="54"
+                                    BackgroundColor="{AppThemeBinding
+                                        Light={StaticResource InputLight},
+                                        Dark={StaticResource InputDark}}"
+                                    Stroke="{AppThemeBinding
+                                        Light={StaticResource BorderLight},
+                                        Dark={StaticResource BorderDark}}"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 12"
+                                    Padding="12,0">
+
+                                    <Grid
+                                        ColumnDefinitions="30,*,Auto">
+
+                                        <Label
+                                            Grid.Column="0"
+                                            Text="✓"
+                                            FontSize="18"
+                                            FontAttributes="Bold"
+                                            VerticalTextAlignment="Center"
+                                            HorizontalTextAlignment="Center"
+                                            TextColor="{AppThemeBinding
+                                                Light={StaticResource MutedLight},
+                                                Dark={StaticResource MutedDark}}" />
+
+                                        <Entry
+                                            x:Name="OtpEntry"
+                                            Grid.Column="1"
+                                            Style="{StaticResource SignupEntryStyle}"
+                                            Placeholder="Enter 6-digit OTP"
+                                            Keyboard="Numeric"
+                                            MaxLength="6"
+                                            ReturnType="Done" />
+
+                                        <Button
+                                            x:Name="VerifyOtpButton"
+                                            Grid.Column="2"
+                                            Text="Verify"
+                                            BackgroundColor="Transparent"
+                                            Padding="4,0"
+                                            HeightRequest="44"
+                                            FontFamily="OpenSansSemibold"
+                                            FontSize="11"
+                                            FontAttributes="Bold"
+                                            TextColor="{AppThemeBinding
+                                                Light={StaticResource PrimaryLight},
+                                                Dark={StaticResource PrimaryDark}}"
+                                            Clicked="VerifyOtpClicked" />
+
+                                    </Grid>
+
+                                </Border>
+
+
+                                <Label
+                                    x:Name="OtpStatusLabel"
+                                    IsVisible="False"
+                                    FontSize="11"
+                                    Margin="2,2,0,0" />
+
+                            </VerticalStackLayout>
+
+                        </VerticalStackLayout>
+
+
+                        <!-- =========================================
+                             EMAIL
+                        ========================================== -->
+
+                        <VerticalStackLayout
+                            Spacing="6"
+                            Margin="0,0,0,16">
+
+                            <Grid
+                                ColumnDefinitions="*,Auto">
+
+                                <Label
+                                    Grid.Column="0"
+                                    Text="Email Address"
+                                    Style="{StaticResource SignupLabelStyle}" />
+
+                                <Label
+                                    Grid.Column="1"
+                                    Text="Optional"
+                                    FontSize="10"
+                                    TextColor="{AppThemeBinding
+                                        Light={StaticResource MutedLight},
+                                        Dark={StaticResource MutedDark}}" />
+
+                            </Grid>
+
+                            <Border
+                                HeightRequest="54"
+                                BackgroundColor="{AppThemeBinding
+                                    Light={StaticResource InputLight},
+                                    Dark={StaticResource InputDark}}"
+                                Stroke="{AppThemeBinding
+                                    Light={StaticResource BorderLight},
+                                    Dark={StaticResource BorderDark}}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="12,0">
+
+                                <Grid
+                                    ColumnDefinitions="30,*">
+
+                                    <Label
+                                        Grid.Column="0"
+                                        Text="@"
+                                        FontSize="18"
+                                        VerticalTextAlignment="Center"
+                                        HorizontalTextAlignment="Center"
+                                        TextColor="{AppThemeBinding
+                                            Light={StaticResource MutedLight},
+                                            Dark={StaticResource MutedDark}}" />
+
+                                    <Entry
+                                        x:Name="EmailEntry"
+                                        Grid.Column="1"
+                                        Style="{StaticResource SignupEntryStyle}"
+                                        Placeholder="Enter email address"
+                                        Keyboard="Email"
+                                        ReturnType="Next" />
+
+                                </Grid>
+
+                            </Border>
+
+                        </VerticalStackLayout>
+
+
+                        <!-- =========================================
+                             CITY
+                        ========================================== -->
+
+                        <VerticalStackLayout
+                            Spacing="6"
+                            Margin="0,0,0,16">
+
+                            <Label
+                                Text="City / Location"
+                                Style="{StaticResource SignupLabelStyle}" />
+
+                            <Border
+                                HeightRequest="54"
+                                BackgroundColor="{AppThemeBinding
+                                    Light={StaticResource InputLight},
+                                    Dark={StaticResource InputDark}}"
+                                Stroke="{AppThemeBinding
+                                    Light={StaticResource BorderLight},
+                                    Dark={StaticResource BorderDark}}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="12,0">
+
+                                <Grid
+                                    ColumnDefinitions="30,*">
+
+                                    <Label
+                                        Grid.Column="0"
+                                        Text="⌖"
+                                        FontSize="20"
+                                        VerticalTextAlignment="Center"
+                                        HorizontalTextAlignment="Center"
+                                        TextColor="{AppThemeBinding
+                                            Light={StaticResource MutedLight},
+                                            Dark={StaticResource MutedDark}}" />
+
+                                    <Entry
+                                        x:Name="CityEntry"
+                                        Grid.Column="1"
+                                        Style="{StaticResource SignupEntryStyle}"
+                                        Placeholder="Enter city / location"
+                                        ReturnType="Next" />
+
+                                </Grid>
+
+                            </Border>
+
+                        </VerticalStackLayout>
+
+
+                        <!-- =========================================
+                             PASSWORD
+                        ========================================== -->
+
+                        <VerticalStackLayout
+                            Spacing="6"
+                            Margin="0,0,0,16">
+
+                            <Label
+                                Text="Password"
+                                Style="{StaticResource SignupLabelStyle}" />
+
+                            <Border
+                                HeightRequest="54"
+                                BackgroundColor="{AppThemeBinding
+                                    Light={StaticResource InputLight},
+                                    Dark={StaticResource InputDark}}"
+                                Stroke="{AppThemeBinding
+                                    Light={StaticResource BorderLight},
+                                    Dark={StaticResource BorderDark}}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="12,0">
+
+                                <Grid
+                                    ColumnDefinitions="30,*,42">
+
+                                    <Label
+                                        Grid.Column="0"
+                                        Text="▢"
+                                        FontSize="18"
+                                        VerticalTextAlignment="Center"
+                                        HorizontalTextAlignment="Center"
+                                        TextColor="{AppThemeBinding
+                                            Light={StaticResource MutedLight},
+                                            Dark={StaticResource MutedDark}}" />
+
+                                    <Entry
+                                        x:Name="PasswordEntry"
+                                        Grid.Column="1"
+                                        Style="{StaticResource SignupEntryStyle}"
+                                        Placeholder="Create a password"
+                                        IsPassword="True"
+                                        ReturnType="Next" />
+
+                                    <Button
+                                        x:Name="PasswordVisibilityButton"
+                                        Grid.Column="2"
+                                        Text="◉"
+                                        FontSize="17"
+                                        BackgroundColor="Transparent"
+                                        Padding="0"
+                                        TextColor="{AppThemeBinding
+                                            Light={StaticResource MutedLight},
+                                            Dark={StaticResource MutedDark}}"
+                                        Clicked="PasswordVisibilityClicked" />
+
+                                </Grid>
+
+                            </Border>
+
+                        </VerticalStackLayout>
+
+
+                        <!-- =========================================
+                             CONFIRM PASSWORD
+                        ========================================== -->
+
+                        <VerticalStackLayout
+                            Spacing="6"
+                            Margin="0,0,0,20">
+
+                            <Label
+                                Text="Confirm Password"
+                                Style="{StaticResource SignupLabelStyle}" />
+
+                            <Border
+                                HeightRequest="54"
+                                BackgroundColor="{AppThemeBinding
+                                    Light={StaticResource InputLight},
+                                    Dark={StaticResource InputDark}}"
+                                Stroke="{AppThemeBinding
+                                    Light={StaticResource BorderLight},
+                                    Dark={StaticResource BorderDark}}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="12,0">
+
+                                <Grid
+                                    ColumnDefinitions="30,*,42">
+
+                                    <Label
+                                        Grid.Column="0"
+                                        Text="▢"
+                                        FontSize="18"
+                                        VerticalTextAlignment="Center"
+                                        HorizontalTextAlignment="Center"
+                                        TextColor="{AppThemeBinding
+                                            Light={StaticResource MutedLight},
+                                            Dark={StaticResource MutedDark}}" />
+
+                                    <Entry
+                                        x:Name="ConfirmPasswordEntry"
+                                        Grid.Column="1"
+                                        Style="{StaticResource SignupEntryStyle}"
+                                        Placeholder="Re-enter your password"
+                                        IsPassword="True"
+                                        ReturnType="Done" />
+
+                                </Grid>
+
+                            </Border>
+
+                        </VerticalStackLayout>
+
+
+                        <!-- =========================================
+                             ERROR
+                        ========================================== -->
+
+                        <Border
+                            x:Name="ErrorContainer"
+                            IsVisible="False"
+                            BackgroundColor="{AppThemeBinding
+                                Light=#FFF1F0,
+                                Dark=#3B1D1A}"
+                            Stroke="{AppThemeBinding
+                                Light={StaticResource ErrorLight},
+                                Dark={StaticResource ErrorDark}}"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 10"
+                            Padding="12"
+                            Margin="0,0,0,16">
+
+                            <Label
+                                x:Name="ErrorLabel"
+                                FontSize="12"
+                                LineBreakMode="WordWrap"
+                                TextColor="{AppThemeBinding
+                                    Light={StaticResource ErrorLight},
+                                    Dark={StaticResource ErrorDark}}" />
+
+                        </Border>
+
+
+                        <!-- =========================================
+                             SUBMIT
+                        ========================================== -->
+
+                        <Button
+                            x:Name="SubmitButton"
+                            Text="Submit Registration  →"
+                            HeightRequest="56"
+                            CornerRadius="12"
+                            IsEnabled="False"
+                            Opacity="0.55"
+                            BackgroundColor="{AppThemeBinding
+                                Light={StaticResource PrimaryLight},
+                                Dark={StaticResource PrimaryDark}}"
+                            TextColor="{AppThemeBinding
+                                Light=#FFFFFF,
+                                Dark=#06210F}"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="15"
+                            FontAttributes="Bold"
+                            Clicked="SubmitRegistrationClicked" />
+
+
+                        <!-- =========================================
+                             LOGIN
+                        ========================================== -->
+
+                        <HorizontalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="4"
+                            Margin="0,18,0,0">
+
+                            <Label
+                                Text="Already registered?"
+                                FontSize="12"
+                                TextColor="{AppThemeBinding
+                                    Light={StaticResource MutedLight},
+                                    Dark={StaticResource MutedDark}}" />
+
+                            <Button
+                                Text="Login"
+                                BackgroundColor="Transparent"
+                                Padding="0"
+                                HeightRequest="24"
+                                FontSize="12"
+                                FontAttributes="Bold"
+                                TextColor="{AppThemeBinding
+                                    Light={StaticResource PrimaryLight},
+                                    Dark={StaticResource PrimaryDark}}"
+                                Clicked="LoginClicked" />
+
+                        </HorizontalStackLayout>
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- =================================================
+                     INFORMATION
+                ================================================== -->
+
+                <Border
+                    Margin="0,18,0,0"
+                    Padding="14"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 12"
+                    BackgroundColor="{AppThemeBinding
+                        Light=#E8F4EB,
+                        Dark=#183222}">
+
+                    <HorizontalStackLayout
+                        Spacing="10">
+
+                        <Label
+                            Text="✓"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            VerticalOptions="Start"
+                            TextColor="{AppThemeBinding
+                                Light={StaticResource PrimaryLight},
+                                Dark={StaticResource PrimaryDark}}" />
+
+                        <Label
+                            Text="Your registration request will be reviewed before your dairy account is activated."
+                            FontSize="11"
+                            LineBreakMode="WordWrap"
+                            VerticalOptions="Center"
+                            TextColor="{AppThemeBinding
+                                Light={StaticResource SecondaryLight},
+                                Dark={StaticResource SecondaryDark}}" />
+
+                    </HorizontalStackLayout>
+
+                </Border>
+
+
+                <!-- =================================================
+                     FOOTER
+                ================================================== -->
+
+                <Grid
+                    ColumnDefinitions="*,*,*"
+                    Margin="0,18,0,0">
+
+                    <Label
+                        Grid.Column="0"
+                        Text="Support"
+                        FontSize="9"
+                        HorizontalTextAlignment="Center"
+                        TextColor="{AppThemeBinding
+                            Light={StaticResource MutedLight},
+                            Dark={StaticResource MutedDark}}" />
+
+                    <Label
+                        Grid.Column="1"
+                        Text="Privacy Policy"
+                        FontSize="9"
+                        HorizontalTextAlignment="Center"
+                        TextColor="{AppThemeBinding
+                            Light={StaticResource MutedLight},
+                            Dark={StaticResource MutedDark}}" />
+
+                    <Label
+                        Grid.Column="2"
+                        Text="Terms of Service"
+                        FontSize="9"
+                        HorizontalTextAlignment="Center"
+                        TextColor="{AppThemeBinding
+                            Light={StaticResource MutedLight},
+                            Dark={StaticResource MutedDark}}" />
+
+                </Grid>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>

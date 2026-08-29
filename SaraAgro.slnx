@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="SaraAgro.Api/SaraAgro.Api.csproj" />
+  <Project Path="SaraAgro.Mobile/SaraAgro.Mobile.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+  <Project Path="SaraAgro.Shared/SaraAgro.Shared.csproj" />
+</Solution>

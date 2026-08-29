@@ -1,0 +1,711 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="SaraAgro.Mobile.Pages.Authentication.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Shell.NavBarIsVisible="False"
+    NavigationPage.HasNavigationBar="False"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LoginBackgroundLight}, Dark={StaticResource LoginBackgroundDark}}">
+
+    <ContentPage.Resources>
+
+        <!-- =========================================================
+             LIGHT THEME
+        ========================================================== -->
+
+        <Color x:Key="LoginBackgroundLight">
+            #F9F9FF
+        </Color>
+
+        <Color x:Key="LoginGradientStartLight">
+            #FCF9F1
+        </Color>
+
+        <Color x:Key="LoginGradientEndLight">
+            #F1F3FF
+        </Color>
+
+        <Color x:Key="LoginCardLight">
+            #FFFFFF
+        </Color>
+
+        <Color x:Key="LoginInputLight">
+            #F7F8FC
+        </Color>
+
+        <Color x:Key="LoginPrimaryLight">
+            #00652D
+        </Color>
+
+        <Color x:Key="LoginPrimaryDarkLight">
+            #004C22
+        </Color>
+
+        <Color x:Key="LoginTextLight">
+            #141B2B
+        </Color>
+
+        <Color x:Key="LoginSecondaryTextLight">
+            #404940
+        </Color>
+
+        <Color x:Key="LoginMutedTextLight">
+            #707A6F
+        </Color>
+
+        <Color x:Key="LoginBorderLight">
+            #BFC9BD
+        </Color>
+
+
+        <!-- =========================================================
+             DARK THEME
+        ========================================================== -->
+
+        <Color x:Key="LoginBackgroundDark">
+            #0F1411
+        </Color>
+
+        <Color x:Key="LoginGradientStartDark">
+            #101811
+        </Color>
+
+        <Color x:Key="LoginGradientEndDark">
+            #111827
+        </Color>
+
+        <Color x:Key="LoginCardDark">
+            #18201B
+        </Color>
+
+        <Color x:Key="LoginInputDark">
+            #202923
+        </Color>
+
+        <Color x:Key="LoginPrimaryDark">
+            #8BD79B
+        </Color>
+
+        <Color x:Key="LoginTextDark">
+            #F2F5F1
+        </Color>
+
+        <Color x:Key="LoginSecondaryTextDark">
+            #C9D1CA
+        </Color>
+
+        <Color x:Key="LoginMutedTextDark">
+            #9CA89F
+        </Color>
+
+        <Color x:Key="LoginBorderDark">
+            #3C4940
+        </Color>
+
+
+        <!-- =========================================================
+             COMMON
+        ========================================================== -->
+
+        <Style
+            x:Key="LoginLabelStyle"
+            TargetType="Label">
+
+            <Setter
+                Property="FontFamily"
+                Value="OpenSansRegular" />
+
+            <Setter
+                Property="FontSize"
+                Value="12" />
+
+            <Setter
+                Property="FontAttributes"
+                Value="Bold" />
+
+            <Setter
+                Property="TextColor"
+                Value="{AppThemeBinding
+                    Light={StaticResource LoginSecondaryTextLight},
+                    Dark={StaticResource LoginSecondaryTextDark}}" />
+
+        </Style>
+
+
+        <Style
+            x:Key="LoginEntryStyle"
+            TargetType="Entry">
+
+            <Setter
+                Property="HeightRequest"
+                Value="56" />
+
+            <Setter
+                Property="FontFamily"
+                Value="OpenSansRegular" />
+
+            <Setter
+                Property="FontSize"
+                Value="15" />
+
+            <Setter
+                Property="TextColor"
+                Value="{AppThemeBinding
+                    Light={StaticResource LoginTextLight},
+                    Dark={StaticResource LoginTextDark}}" />
+
+            <Setter
+                Property="PlaceholderColor"
+                Value="{AppThemeBinding
+                    Light={StaticResource LoginMutedTextLight},
+                    Dark={StaticResource LoginMutedTextDark}}" />
+
+            <Setter
+                Property="BackgroundColor"
+                Value="Transparent" />
+
+            <Setter
+                Property="ClearButtonVisibility"
+                Value="Never" />
+
+        </Style>
+
+
+        <Style
+            x:Key="LoginSecondaryButtonStyle"
+            TargetType="Button">
+
+            <Setter
+                Property="HeightRequest"
+                Value="50" />
+
+            <Setter
+                Property="CornerRadius"
+                Value="10" />
+
+            <Setter
+                Property="FontFamily"
+                Value="OpenSansSemibold" />
+
+            <Setter
+                Property="FontSize"
+                Value="13" />
+
+            <Setter
+                Property="TextColor"
+                Value="{AppThemeBinding
+                    Light={StaticResource LoginPrimaryDarkLight},
+                    Dark={StaticResource LoginPrimaryDark}}" />
+
+            <Setter
+                Property="BackgroundColor"
+                Value="Transparent" />
+
+            <Setter
+                Property="BorderWidth"
+                Value="1" />
+
+            <Setter
+                Property="BorderColor"
+                Value="{AppThemeBinding
+                    Light={StaticResource LoginPrimaryDarkLight},
+                    Dark={StaticResource LoginPrimaryDark}}" />
+
+        </Style>
+
+    </ContentPage.Resources>
+
+
+    <!-- =============================================================
+         PAGE
+    ============================================================= -->
+
+    <Grid>
+
+        <!-- Background -->
+        <Grid.Background>
+            <LinearGradientBrush
+                StartPoint="0,0"
+                EndPoint="1,1">
+
+                <GradientStop
+                    Offset="0"
+                    Color="{AppThemeBinding
+                        Light={StaticResource LoginGradientStartLight},
+                        Dark={StaticResource LoginGradientStartDark}}" />
+
+                <GradientStop
+                    Offset="1"
+                    Color="{AppThemeBinding
+                        Light={StaticResource LoginGradientEndLight},
+                        Dark={StaticResource LoginGradientEndDark}}" />
+
+            </LinearGradientBrush>
+        </Grid.Background>
+
+
+        <!-- =========================================================
+             SCROLL CONTENT
+        ========================================================== -->
+
+        <ScrollView
+            x:Name="LoginScrollView"
+            VerticalScrollBarVisibility="Never">
+
+            <VerticalStackLayout
+                Padding="16,20,16,18"
+                Spacing="0">
+
+
+                <!-- =================================================
+                     BRAND
+                ================================================== -->
+
+                <VerticalStackLayout
+                    Spacing="0"
+                    HorizontalOptions="Center"
+                    Margin="0,0,0,22">
+
+                    <!-- Green Circle -->
+                    <Border
+                        WidthRequest="64"
+                        HeightRequest="64"
+                        StrokeThickness="0"
+                        BackgroundColor="{AppThemeBinding
+                            Light={StaticResource LoginPrimaryDarkLight},
+                            Dark={StaticResource LoginPrimaryDark}}"
+                        StrokeShape="RoundRectangle 32"
+                        HorizontalOptions="Center"
+                        Padding="0"
+                        Margin="0,0,0,12">
+
+                        <Label
+                            Text="☼"
+                            FontSize="36"
+                            HorizontalTextAlignment="Center"
+                            VerticalTextAlignment="Center"
+                            TextColor="{AppThemeBinding
+                                Light={StaticResource LoginCardLight},
+                                Dark={StaticResource LoginBackgroundDark}}" />
+
+                    </Border>
+
+
+                    <!-- Ratif -->
+                    <Label
+                        Text="Desi Dudh"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="24"
+                        FontAttributes="Bold"
+                        HorizontalTextAlignment="Center"
+                        TextColor="{AppThemeBinding
+                            Light={StaticResource LoginPrimaryDarkLight},
+                            Dark={StaticResource LoginPrimaryDark}}"
+                        Margin="0,0,0,2" />
+
+
+                    <!-- Tagline -->
+                    <Label
+                        Text="Manage your dairy enterprise"
+                        FontFamily="OpenSansRegular"
+                        FontSize="13"
+                        HorizontalTextAlignment="Center"
+                        TextColor="{AppThemeBinding
+                            Light={StaticResource LoginSecondaryTextLight},
+                            Dark={StaticResource LoginSecondaryTextDark}}" />
+
+                </VerticalStackLayout>
+
+
+                <!-- =================================================
+                     LOGIN CARD
+                ================================================== -->
+
+                <Border
+                    BackgroundColor="{AppThemeBinding
+                        Light={StaticResource LoginCardLight},
+                        Dark={StaticResource LoginCardDark}}"
+                    Stroke="{AppThemeBinding
+                        Light={StaticResource LoginBorderLight},
+                        Dark={StaticResource LoginBorderDark}}"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="20">
+
+                    <VerticalStackLayout
+                        Spacing="0">
+
+
+                        <!-- =========================================
+                             MOBILE NUMBER
+                        ========================================== -->
+
+                        <VerticalStackLayout
+                            Spacing="7"
+                            Margin="0,0,0,18">
+
+                            <Label
+                                Text="Mobile Number"
+                                Style="{StaticResource LoginLabelStyle}" />
+
+                            <Border
+                                HeightRequest="56"
+                                BackgroundColor="{AppThemeBinding
+                                    Light={StaticResource LoginInputLight},
+                                    Dark={StaticResource LoginInputDark}}"
+                                Stroke="{AppThemeBinding
+                                    Light={StaticResource LoginBorderLight},
+                                    Dark={StaticResource LoginBorderDark}}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="12,0">
+
+                                <Grid
+                                    ColumnDefinitions="28,*"
+                                    VerticalOptions="Center">
+
+                                    <!-- Phone Icon -->
+                                    <Label
+                                        Grid.Column="0"
+                                        Text="▯"
+                                        FontSize="21"
+                                        VerticalTextAlignment="Center"
+                                        HorizontalTextAlignment="Center"
+                                        TextColor="{AppThemeBinding
+                                            Light={StaticResource LoginMutedTextLight},
+                                            Dark={StaticResource LoginMutedTextDark}}" />
+
+                                    <Entry
+                                        x:Name="MobileNumberEntry"
+                                        Grid.Column="1"
+                                        Style="{StaticResource LoginEntryStyle}"
+                                        Placeholder="Enter 10-digit number"
+                                        Keyboard="Telephone"
+                                        MaxLength="10"
+                                        ClearButtonVisibility="Never" />
+
+                                </Grid>
+
+                            </Border>
+
+                        </VerticalStackLayout>
+
+
+                        <!-- =========================================
+                             PASSWORD
+                        ========================================== -->
+
+                        <VerticalStackLayout
+                            Spacing="7"
+                            Margin="0,0,0,20">
+
+                            <Grid
+                                ColumnDefinitions="*,Auto">
+
+                                <Label
+                                    Grid.Column="0"
+                                    Text="Password"
+                                    Style="{StaticResource LoginLabelStyle}" />
+
+                                <Button
+                                    Grid.Column="1"
+                                    Text="Forgot?"
+                                    BackgroundColor="Transparent"
+                                    Padding="0"
+                                    HeightRequest="24"
+                                    FontFamily="OpenSansRegular"
+                                    FontSize="11"
+                                    TextColor="#0051D5"
+                                    Clicked="ForgotPasswordClicked" />
+
+                            </Grid>
+
+
+                            <Border
+                                HeightRequest="56"
+                                BackgroundColor="{AppThemeBinding
+                                    Light={StaticResource LoginInputLight},
+                                    Dark={StaticResource LoginInputDark}}"
+                                Stroke="{AppThemeBinding
+                                    Light={StaticResource LoginBorderLight},
+                                    Dark={StaticResource LoginBorderDark}}"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="12,0">
+
+                                <Grid
+                                    ColumnDefinitions="28,*,42"
+                                    VerticalOptions="Center">
+
+                                    <!-- Lock -->
+                                    <Label
+                                        Grid.Column="0"
+                                        Text="▢"
+                                        FontSize="19"
+                                        VerticalTextAlignment="Center"
+                                        HorizontalTextAlignment="Center"
+                                        TextColor="{AppThemeBinding
+                                            Light={StaticResource LoginMutedTextLight},
+                                            Dark={StaticResource LoginMutedTextDark}}" />
+
+
+                                    <Entry
+                                        x:Name="PasswordEntry"
+                                        Grid.Column="1"
+                                        Style="{StaticResource LoginEntryStyle}"
+                                        Placeholder="Enter password"
+                                        IsPassword="True"
+                                        ReturnType="Go"
+                                        Completed="PasswordEntryCompleted" />
+
+
+                                    <!-- Password visibility -->
+                                    <Button
+                                        x:Name="PasswordVisibilityButton"
+                                        Grid.Column="2"
+                                        Text="◉"
+                                        FontSize="18"
+                                        BackgroundColor="Transparent"
+                                        Padding="0"
+                                        TextColor="{AppThemeBinding
+                                            Light={StaticResource LoginMutedTextLight},
+                                            Dark={StaticResource LoginMutedTextDark}}"
+                                        Clicked="PasswordVisibilityClicked" />
+
+                                </Grid>
+
+                            </Border>
+
+                        </VerticalStackLayout>
+
+
+                        <!-- =========================================
+                             ERROR
+                        ========================================== -->
+
+                        <Border
+                            x:Name="ErrorContainer"
+                            IsVisible="False"
+                            BackgroundColor="{AppThemeBinding
+                                Light={StaticResource LoginGradientStartLight},
+                                Dark={StaticResource LoginGradientEndDark}}"
+                            Stroke="#BA1A1A"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 10"
+                            Padding="12"
+                            Margin="0,0,0,16">
+
+                            <Label
+                                x:Name="ErrorLabel"
+                                FontFamily="OpenSansRegular"
+                                FontSize="12"
+                                LineBreakMode="WordWrap"
+                                TextColor="{AppThemeBinding
+                                    Light={StaticResource LoginPrimaryDarkLight},
+                                    Dark={StaticResource LoginPrimaryDark}}" />
+
+                        </Border>
+
+
+                        <!-- =========================================
+                             LOGIN BUTTON
+                        ========================================== -->
+
+                        <Button
+                            x:Name="LoginButton"
+                            HeightRequest="56"
+                            CornerRadius="12"
+                            BackgroundColor="{AppThemeBinding
+                                Light={StaticResource LoginPrimaryDarkLight},
+                                Dark={StaticResource LoginPrimaryDark}}"
+                            TextColor="{AppThemeBinding
+                                Light={StaticResource LoginCardLight},
+                                Dark={StaticResource LoginBackgroundDark}}"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="15"
+                            FontAttributes="Bold"
+                            Text="Login  →"
+                            Clicked="LoginClicked" />
+
+
+                        <!-- =========================================
+                             REGISTRATION
+                        ========================================== -->
+
+                        <VerticalStackLayout
+                            Spacing="0"
+                            Margin="0,22,0,0">
+
+                            <Grid
+                                ColumnDefinitions="*,Auto,*"
+                                ColumnSpacing="8">
+
+                                <BoxView
+                                    Grid.Column="0"
+                                    HeightRequest="1"
+                                    VerticalOptions="Center"
+                                    Color="{AppThemeBinding
+                                        Light={StaticResource LoginBorderLight},
+                                        Dark={StaticResource LoginBorderDark}}" />
+
+                                <Label
+                                    Grid.Column="1"
+                                    Text="New to Ratif?"
+                                    FontFamily="OpenSansRegular"
+                                    FontSize="10"
+                                    TextColor="{AppThemeBinding
+                                        Light={StaticResource LoginMutedTextLight},
+                                        Dark={StaticResource LoginMutedTextDark}}"
+                                    VerticalTextAlignment="Center" />
+
+                                <BoxView
+                                    Grid.Column="2"
+                                    HeightRequest="1"
+                                    VerticalOptions="Center"
+                                    Color="{AppThemeBinding
+                                        Light={StaticResource LoginBorderLight},
+                                        Dark={StaticResource LoginBorderDark}}" />
+
+                            </Grid>
+
+
+                            <Button
+                                x:Name="RegistrationButton"
+                                Text="Request Registration"
+                                Style="{StaticResource LoginSecondaryButtonStyle}"
+                                Margin="0,16,0,0"
+                                Clicked="RegistrationClicked" />
+
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- =================================================
+                     DAIRY IMAGE / VISUAL
+                ================================================== -->
+
+                <Border
+                    HeightRequest="135"
+                    Margin="0,18,0,0"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 18"
+                    BackgroundColor="{AppThemeBinding
+                        Light={StaticResource LoginCardLight},
+                        Dark={StaticResource LoginCardDark}}"
+                    Clip="">
+
+                    <Grid>
+
+                        <!-- Soft dairy-style background -->
+                        <Grid.Background>
+                            <LinearGradientBrush
+                                StartPoint="0,0"
+                                EndPoint="1,1">
+
+                                <GradientStop
+                                    Offset="0"
+                                    Color="{AppThemeBinding
+                                        Light={StaticResource LoginGradientStartLight},
+                                        Dark={StaticResource LoginInputDark}}" />
+
+                                <GradientStop
+                                    Offset="1"
+                                    Color="{AppThemeBinding
+                                        Light={StaticResource LoginGradientEndLight},
+                                        Dark={StaticResource LoginBackgroundDark}}" />
+
+                            </LinearGradientBrush>
+                        </Grid.Background>
+
+
+                        <!-- Decorative circles -->
+                        <Ellipse
+                            WidthRequest="180"
+                            HeightRequest="180"
+                            HorizontalOptions="Start"
+                            VerticalOptions="End"
+                            TranslationX="-60"
+                            TranslationY="80"
+                            Fill="{AppThemeBinding
+                                Light=#E5E8E5,
+                                Dark=#273229}"
+                            Opacity="0.5" />
+
+                        <Ellipse
+                            WidthRequest="140"
+                            HeightRequest="140"
+                            HorizontalOptions="End"
+                            VerticalOptions="Start"
+                            TranslationX="45"
+                            TranslationY="-50"
+                            Fill="{AppThemeBinding
+                                Light=#E2E7E2,
+                                Dark=#263229}"
+                            Opacity="0.45" />
+
+
+                        <Label
+                            Text="DIGITIZING THE DAIRY CHAIN"
+                            HorizontalOptions="Center"
+                            VerticalOptions="End"
+                            Margin="0,0,0,18"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="10"
+                            CharacterSpacing="1.8"
+                            TextColor="{AppThemeBinding
+                                Light={StaticResource LoginSecondaryTextLight},
+                                Dark={StaticResource LoginSecondaryTextDark}}" />
+
+                    </Grid>
+
+                </Border>
+
+
+                <!-- =================================================
+                     FOOTER
+                ================================================== -->
+
+                <Grid
+                    ColumnDefinitions="*,*,*"
+                    Margin="0,16,0,0">
+
+                    <Label
+                        Grid.Column="0"
+                        Text="Support"
+                        HorizontalTextAlignment="Center"
+                        FontSize="9"
+                        TextColor="{AppThemeBinding
+                            Light={StaticResource LoginMutedTextLight},
+                            Dark={StaticResource LoginMutedTextDark}}" />
+
+                    <Label
+                        Grid.Column="1"
+                        Text="Privacy Policy"
+                        HorizontalTextAlignment="Center"
+                        FontSize="9"
+                        TextColor="{AppThemeBinding
+                            Light={StaticResource LoginMutedTextLight},
+                            Dark={StaticResource LoginMutedTextDark}}" />
+
+                    <Label
+                        Grid.Column="2"
+                        Text="Terms of Service"
+                        HorizontalTextAlignment="Center"
+                        FontSize="9"
+                        TextColor="{AppThemeBinding
+                            Light={StaticResource LoginMutedTextLight},
+                            Dark={StaticResource LoginMutedTextDark}}" />
+
+                </Grid>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>
