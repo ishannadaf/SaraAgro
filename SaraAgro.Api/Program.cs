@@ -11,6 +11,7 @@ using SaraAgro.Api.Interfaces.MilkDistribution;
 using SaraAgro.Api.Interfaces.Otp;
 using SaraAgro.Api.Interfaces.RateGroup;
 using SaraAgro.Api.Interfaces.RateMaster;
+using SaraAgro.Api.Interfaces.Reports;
 using SaraAgro.Api.Interfaces.Sms;
 using SaraAgro.Api.Services;
 using SaraAgro.Api.Services.Authentication;
@@ -21,112 +22,201 @@ using SaraAgro.Api.Services.MilkDistribution;
 using SaraAgro.Api.Services.Otp;
 using SaraAgro.Api.Services.RateGroup;
 using SaraAgro.Api.Services.RateMaster;
-using SaraAgro.Api.Services.Sms;
-using SaraAgro.Api.Interfaces.Reports;
 using SaraAgro.Api.Services.Reports;
+using SaraAgro.Api.Services.Sms;
 using System.Text;
-
-
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
-builder.Services.AddScoped<IClientService, ClientService>();
-builder.Services.AddScoped<IOtpService, OtpService>();
-builder.Services.Configure<OtpSettings>(
-    builder.Configuration.GetSection("OtpSettings"));
-builder.Services.AddScoped<ISmsService, SmsService>();
 
-builder.Services.AddScoped<PasswordService>();
-builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-builder.Services.AddScoped<IOtpService, OtpService>();
-builder.Services.AddScoped<PasswordService>();
-builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-builder.Services.AddScoped<IOtpService, OtpService>();
-builder.Services.AddScoped<ISmsService, SmsService>();
-builder.Services.AddScoped<IClientService, ClientService>();
-builder.Services.AddScoped<IRateMasterService, RateMasterService>();
-builder.Services.AddScoped<ICustomerService, CustomerService>();
-builder.Services.AddScoped<IMilkDistributionService, MilkDistributionService>();
-builder.Services.AddScoped<IRateGroupService, RateGroupService>();
-builder.Services.AddScoped<IBillingService, BillingService>();
+// =========================================================
+// SERVICES
+// =========================================================
 
+// Authentication
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<PasswordService>();
+
+// JWT
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("JwtSettings"));
 
-builder.Services.AddDbContext<SaraAgroDbContext>(options =>
-    options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        ServerVersion.AutoDetect(
-            builder.Configuration.GetConnectionString("DefaultConnection")
-        )));
+// Client
+builder.Services.AddScoped<IClientService, ClientService>();
 
-builder.Services.AddScoped<PasswordService>();
-builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+// OTP / SMS
+builder.Services.AddScoped<IOtpService, OtpService>();
+builder.Services.AddScoped<ISmsService, SmsService>();
+
+builder.Services.Configure<OtpSettings>(
+    builder.Configuration.GetSection("OtpSettings"));
+
+// Rate Master
+builder.Services.AddScoped<IRateMasterService, RateMasterService>();
+
+// Rate Group
+builder.Services.AddScoped<IRateGroupService, RateGroupService>();
+
+// Customers
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+
+// Milk Distribution
+builder.Services.AddScoped<IMilkDistributionService, MilkDistributionService>();
+
+// Billing
+builder.Services.AddScoped<IBillingService, BillingService>();
+
+// Reports
+builder.Services.AddScoped<IReportsService, ReportsService>();
 builder.Services.AddScoped<ReportPdfService>();
-builder.Services.AddScoped<IReportsService,ReportsService>();
 
-var jwtSettings = builder.Configuration
-    .GetSection("JwtSettings")
-    .Get<SaraAgro.Api.Authentication.JwtSettings>()
+
+// =========================================================
+// DATABASE
+// =========================================================
+
+var connectionString =
+    builder.Configuration.GetConnectionString(
+        "DefaultConnection");
+
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException(
+        "Database connection string 'DefaultConnection' is not configured.");
+}
+
+builder.Services.AddDbContext<SaraAgroDbContext>(
+    options =>
+        options.UseMySql(
+            connectionString,
+            ServerVersion.AutoDetect(connectionString)));
+
+
+// =========================================================
+// JWT CONFIGURATION
+// =========================================================
+
+var jwtSettings =
+    builder.Configuration
+        .GetSection("JwtSettings")
+        .Get<JwtSettings>()
     ?? throw new InvalidOperationException(
         "JWT settings are not configured.");
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+if (string.IsNullOrWhiteSpace(jwtSettings.SecretKey))
+{
+    throw new InvalidOperationException(
+        "JWT SecretKey is not configured.");
+}
+
+builder.Services
+    .AddAuthentication(
+        JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
+        options.TokenValidationParameters =
+            new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
 
-            ValidIssuer = jwtSettings.Issuer,
-            ValidAudience = jwtSettings.Audience,
+                ValidIssuer =
+                    jwtSettings.Issuer,
 
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
+                ValidAudience =
+                    jwtSettings.Audience,
 
-            ClockSkew = TimeSpan.FromSeconds(30)
-        };
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(
+                            jwtSettings.SecretKey)),
+
+                ClockSkew =
+                    TimeSpan.FromSeconds(30)
+            };
     });
 
 builder.Services.AddAuthorization();
 
-// Add services to the container.
+
+// =========================================================
+// MVC / API CONTROLLERS
+// =========================================================
 
 builder.Services.AddControllers();
+
+
+// =========================================================
+// SWAGGER
+// =========================================================
+
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+
+// =========================================================
+// OPENAPI
+// =========================================================
+
 builder.Services.AddOpenApi();
+
+
+// =========================================================
+// BUILD
+// =========================================================
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+
+// =========================================================
+// SWAGGER
+// =========================================================
+
+// Keep Swagger enabled so we can test the
+// production Railway deployment.
 app.UseSwagger();
+
 app.UseSwaggerUI();
-if (app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-}
+
+
+// =========================================================
+// AUTHENTICATION / AUTHORIZATION
+// =========================================================
 
 app.UseAuthentication();
+
 app.UseAuthorization();
+
+
+// =========================================================
+// API CONTROLLERS
+// =========================================================
+
+// IMPORTANT:
+// This was missing in your previous Program.cs.
+// Without this, controller endpoints return 404.
+app.MapControllers();
+
+
+// =========================================================
+// HEALTH CHECK
+// =========================================================
 
 app.MapGet(
     "/health",
-    () => Results.Ok(new
-    {
-        status = "healthy",
-        service = "SaraAgro.Api"
-    }));
+    () => Results.Ok(
+        new
+        {
+            status = "healthy",
+            service = "SaraAgro.Api"
+        }));
+
+
+// =========================================================
+// START APPLICATION
+// =========================================================
 
 app.Run();

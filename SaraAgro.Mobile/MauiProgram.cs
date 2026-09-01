@@ -39,7 +39,7 @@ public static class MauiProgram
         // =====================================================
 
         const string apiBaseUrl =
-            "http://172.20.0.15:5000/";
+            "https://saraagro-production.up.railway.app/";
 
 
         Console.WriteLine(
