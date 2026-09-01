@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="SaraAgro.Mobile.Pages.Settings.SettingsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Settings"
+    BackgroundColor="{AppThemeBinding Light=White, Dark=#0B1510}">
+
+    <ScrollView>
+
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="20">
+
+
+            <!-- ================================================= -->
+            <!-- HEADER -->
+            <!-- ================================================= -->
+
+            <VerticalStackLayout
+                Spacing="4">
+
+                <Label
+                    Text="Settings"
+                    FontSize="28"
+                    FontAttributes="Bold"
+                    TextColor="{AppThemeBinding Light=#111111, Dark=White}" />
+
+                <Label
+                    Text="Manage your application settings"
+                    FontSize="14"
+                    TextColor="{AppThemeBinding Light=#555555, Dark=#B8C5BE}" />
+
+            </VerticalStackLayout>
+
+
+            <!-- ================================================= -->
+            <!-- ACCOUNT -->
+            <!-- ================================================= -->
+
+            <Border
+                Padding="16"
+                StrokeThickness="1"
+                Stroke="{AppThemeBinding Light=#D5DAD7, Dark=#314039}"
+                BackgroundColor="{AppThemeBinding Light=#F7F9F8, Dark=#14221B}">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="14" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout
+                    Spacing="16">
+
+
+                    <Label
+                        Text="Account"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="{AppThemeBinding Light=#111111, Dark=White}" />
+
+
+                    <!-- USER -->
+
+                    <Grid
+                        ColumnDefinitions="Auto,*"
+                        ColumnSpacing="14">
+
+                        <Label
+                            Text="👤"
+                            FontSize="22"
+                            VerticalOptions="Center" />
+
+                        <VerticalStackLayout
+                            Grid.Column="1"
+                            Spacing="2">
+
+                            <Label
+                                Text="User"
+                                FontSize="12"
+                                TextColor="{AppThemeBinding Light=#666666, Dark=#AEBBB4}" />
+
+                            <Label
+                                x:Name="UserNameLabel"
+                                Text="Loading..."
+                                FontSize="15"
+                                FontAttributes="Bold"
+                                TextColor="{AppThemeBinding Light=#111111, Dark=White}" />
+
+                        </VerticalStackLayout>
+
+                    </Grid>
+
+
+                    <!-- BUSINESS -->
+
+                    <Grid
+                        ColumnDefinitions="Auto,*"
+                        ColumnSpacing="14">
+
+                        <Label
+                            Text="🏢"
+                            FontSize="22"
+                            VerticalOptions="Center" />
+
+                        <VerticalStackLayout
+                            Grid.Column="1"
+                            Spacing="2">
+
+                            <Label
+                                Text="Business"
+                                FontSize="12"
+                                TextColor="{AppThemeBinding Light=#666666, Dark=#AEBBB4}" />
+
+                            <Label
+                                x:Name="ClientNameLabel"
+                                Text="Loading..."
+                                FontSize="15"
+                                FontAttributes="Bold"
+                                TextColor="{AppThemeBinding Light=#111111, Dark=White}" />
+
+                        </VerticalStackLayout>
+
+                    </Grid>
+
+
+                    <!-- MOBILE -->
+
+                    <Grid
+                        ColumnDefinitions="Auto,*"
+                        ColumnSpacing="14">
+
+                        <Label
+                            Text="📱"
+                            FontSize="22"
+                            VerticalOptions="Center" />
+
+                        <VerticalStackLayout
+                            Grid.Column="1"
+                            Spacing="2">
+
+                            <Label
+                                Text="Mobile Number"
+                                FontSize="12"
+                                TextColor="{AppThemeBinding Light=#666666, Dark=#AEBBB4}" />
+
+                            <Label
+                                x:Name="MobileNumberLabel"
+                                Text="Loading..."
+                                FontSize="15"
+                                FontAttributes="Bold"
+                                TextColor="{AppThemeBinding Light=#111111, Dark=White}" />
+
+                        </VerticalStackLayout>
+
+                    </Grid>
+
+                </VerticalStackLayout>
+
+            </Border>
+
+
+            <!-- ================================================= -->
+            <!-- SESSION -->
+            <!-- ================================================= -->
+
+            <Border
+                Padding="16"
+                StrokeThickness="1"
+                Stroke="{AppThemeBinding Light=#D5DAD7, Dark=#314039}"
+                BackgroundColor="{AppThemeBinding Light=#F7F9F8, Dark=#14221B}">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="14" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout
+                    Spacing="12">
+
+
+                    <Label
+                        Text="Session"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="{AppThemeBinding Light=#111111, Dark=White}" />
+
+
+                    <Label
+                        Text="You are currently signed in to SaraAgro."
+                        FontSize="13"
+                        TextColor="{AppThemeBinding Light=#666666, Dark=#AEBBB4}" />
+
+
+                    <Button
+                        x:Name="LogoutButton"
+                        Text="Logout"
+                        HeightRequest="50"
+                        CornerRadius="12"
+                        BackgroundColor="#D32F2F"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        Clicked="LogoutClicked" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+
+            <!-- ================================================= -->
+            <!-- APPLICATION -->
+            <!-- ================================================= -->
+
+            <Border
+                Padding="16"
+                StrokeThickness="1"
+                Stroke="{AppThemeBinding Light=#D5DAD7, Dark=#314039}"
+                BackgroundColor="{AppThemeBinding Light=#F7F9F8, Dark=#14221B}">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="14" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout
+                    Spacing="8">
+
+
+                    <Label
+                        Text="Application"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="{AppThemeBinding Light=#111111, Dark=White}" />
+
+
+                    <Label
+                        Text="SaraAgro"
+                        FontSize="14"
+                        FontAttributes="Bold"
+                        TextColor="{AppThemeBinding Light=#111111, Dark=White}" />
+
+
+                    <Label
+                        Text="Milk collection and dairy management"
+                        FontSize="13"
+                        TextColor="{AppThemeBinding Light=#666666, Dark=#AEBBB4}" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>

@@ -1,103 +1,138 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SaraAgro.Mobile.Services.Api;
+
 using SaraAgro.Mobile.Services.Api.Authentication;
 using SaraAgro.Mobile.Services.Api.Billing;
 using SaraAgro.Mobile.Services.Api.Customer;
 using SaraAgro.Mobile.Services.Api.MilkDistribution;
 using SaraAgro.Mobile.Services.Api.RateGroup;
 using SaraAgro.Mobile.Services.Api.RateMaster;
-using SaraAgro.Mobile.Pages.Billing;
 using SaraAgro.Mobile.Services.Api.Reports;
-namespace SaraAgro.Mobile
+using SaraAgro.Mobile.Services.Authentication;
+
+namespace SaraAgro.Mobile;
+
+public static class MauiProgram
 {
-    public static class MauiProgram
+    public static MauiApp CreateMauiApp()
     {
-        public static MauiApp CreateMauiApp()
-        {
-            var builder = MauiApp.CreateBuilder();
+        var builder =
+            MauiApp.CreateBuilder();
 
-            builder
-                .UseMauiApp<App>()
-                .ConfigureFonts(fonts =>
-                {
-                    fonts.AddFont(
-                        "OpenSans-Regular.ttf",
-                        "OpenSansRegular");
 
-                    fonts.AddFont(
-                        "OpenSans-Semibold.ttf",
-                        "OpenSansSemibold");
-                });
+        builder
+            .UseMauiApp<App>()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont(
+                    "OpenSans-Regular.ttf",
+                    "OpenSansRegular");
 
-            // =====================================================
-            // API BASE URL
-            // =====================================================
+                fonts.AddFont(
+                    "OpenSans-Semibold.ttf",
+                    "OpenSansSemibold");
+            });
 
-            const string apiBaseUrl =
-                "http://192.168.1.12:5000/";
 
-            Console.WriteLine(
-                $"API Base URL: {apiBaseUrl}");
+        // =====================================================
+        // API BASE URL
+        // =====================================================
 
-            // =====================================================
-            // API SERVICES
-            // =====================================================
+        const string apiBaseUrl =
+            "http://172.20.0.15:5000/";
 
-            builder.Services.AddHttpClient<AuthenticationApiService>(
-                client =>
-                {
-                    client.BaseAddress =
-                        new Uri(apiBaseUrl);
-                });
 
-            builder.Services.AddHttpClient<RateGroupApiService>(
-                client =>
-                {
-                    client.BaseAddress =
-                        new Uri(apiBaseUrl);
-                });
+        Console.WriteLine(
+            $"API Base URL: {apiBaseUrl}");
 
-            builder.Services.AddHttpClient<RateMasterApiService>(
-                client =>
-                {
-                    client.BaseAddress =
-                        new Uri(apiBaseUrl);
-                });
 
-            builder.Services.AddHttpClient<CustomerApiService>(
-                client =>
-                {
-                    client.BaseAddress =
-                        new Uri(apiBaseUrl);
-                });
+        // =====================================================
+        // API SERVICES
+        // =====================================================
 
-            builder.Services.AddHttpClient<MilkDistributionApiService>(
-                client =>
-                {
-                    client.BaseAddress =
-                        new Uri(apiBaseUrl);
-                });
+        builder.Services.AddHttpClient<
+            AuthenticationApiService>(
+            client =>
+            {
+                client.BaseAddress =
+                    new Uri(apiBaseUrl);
 
-            builder.Services.AddHttpClient<BillingApiService>(
-                client =>
-                {
-                    client.BaseAddress =
-                        new Uri(apiBaseUrl);
-                });
+                client.Timeout =
+                    TimeSpan.FromSeconds(30);
+            });
 
-            builder.Services.AddHttpClient<ReportsApiService>(
-                client =>
-                {
-                    client.BaseAddress =
-                        new Uri(apiBaseUrl);
-                });
+
+        builder.Services.AddHttpClient<
+            RateGroupApiService>(
+            client =>
+            {
+                client.BaseAddress =
+                    new Uri(apiBaseUrl);
+            });
+
+
+        builder.Services.AddHttpClient<
+            RateMasterApiService>(
+            client =>
+            {
+                client.BaseAddress =
+                    new Uri(apiBaseUrl);
+            });
+
+
+        builder.Services.AddHttpClient<
+            CustomerApiService>(
+            client =>
+            {
+                client.BaseAddress =
+                    new Uri(apiBaseUrl);
+            });
+
+
+        builder.Services.AddHttpClient<
+            MilkDistributionApiService>(
+            client =>
+            {
+                client.BaseAddress =
+                    new Uri(apiBaseUrl);
+            });
+
+
+        builder.Services.AddHttpClient<
+            BillingApiService>(
+            client =>
+            {
+                client.BaseAddress =
+                    new Uri(apiBaseUrl);
+            });
+
+
+        builder.Services.AddHttpClient<
+            ReportsApiService>(
+            client =>
+            {
+                client.BaseAddress =
+                    new Uri(apiBaseUrl);
+            });
+
+
+        // =====================================================
+        // AUTH SESSION
+        // =====================================================
+
+        builder.Services.AddSingleton<
+            AuthSessionService>();
+
+
+        // =====================================================
+        // DEBUG LOGGING
+        // =====================================================
 
 #if DEBUG
-            builder.Logging.AddDebug();
+        builder.Logging.AddDebug();
 #endif
 
-            return builder.Build();
-        }
+
+        return builder.Build();
     }
 }

@@ -1,22 +1,35 @@
 ﻿using SaraAgro.Mobile.Services.Api.Authentication;
+using SaraAgro.Mobile.Services.Authentication;
 
 namespace SaraAgro.Mobile.Pages.Authentication;
 
 public partial class LoginPage : ContentPage
 {
-    private readonly AuthenticationApiService _authenticationApiService;
+    private readonly AuthenticationApiService
+        _authenticationApiService;
+
+    private readonly AuthSessionService
+        _authSessionService;
 
     private bool _isPasswordVisible;
     private bool _isLoggingIn;
 
 
+    // =========================================================
+    // CONSTRUCTOR
+    // =========================================================
+
     public LoginPage(
-        AuthenticationApiService authenticationApiService)
+        AuthenticationApiService authenticationApiService,
+        AuthSessionService authSessionService)
     {
         InitializeComponent();
 
         _authenticationApiService =
             authenticationApiService;
+
+        _authSessionService =
+            authSessionService;
 
         MobileNumberEntry.TextChanged +=
             MobileNumberEntry_TextChanged;
@@ -34,12 +47,14 @@ public partial class LoginPage : ContentPage
         if (string.IsNullOrEmpty(e.NewTextValue))
             return;
 
+
         var digitsOnly =
             new string(
                 e.NewTextValue
                     .Where(char.IsDigit)
                     .Take(10)
                     .ToArray());
+
 
         if (MobileNumberEntry.Text != digitsOnly)
         {
@@ -54,17 +69,20 @@ public partial class LoginPage : ContentPage
     // =========================================================
 
     private void PasswordVisibilityClicked(
-        object sender,
+        object? sender,
         EventArgs e)
     {
         _isPasswordVisible =
             !_isPasswordVisible;
 
+
         PasswordEntry.IsPassword =
             !_isPasswordVisible;
 
+
         PasswordVisibilityButton.Text =
             "◉";
+
 
         PasswordEntry.Focus();
     }
@@ -75,7 +93,7 @@ public partial class LoginPage : ContentPage
     // =========================================================
 
     private async void ForgotPasswordClicked(
-        object sender,
+        object? sender,
         EventArgs e)
     {
         await DisplayAlertAsync(
@@ -90,7 +108,7 @@ public partial class LoginPage : ContentPage
     // =========================================================
 
     private async void RegistrationClicked(
-        object sender,
+        object? sender,
         EventArgs e)
     {
         await Shell.Current.GoToAsync(
@@ -103,7 +121,7 @@ public partial class LoginPage : ContentPage
     // =========================================================
 
     private async void PasswordEntryCompleted(
-        object sender,
+        object? sender,
         EventArgs e)
     {
         await LoginAsync();
@@ -115,7 +133,7 @@ public partial class LoginPage : ContentPage
     // =========================================================
 
     private async void LoginClicked(
-        object sender,
+        object? sender,
         EventArgs e)
     {
         await LoginAsync();
@@ -131,12 +149,14 @@ public partial class LoginPage : ContentPage
         if (_isLoggingIn)
             return;
 
+
         HideError();
 
 
         var mobile =
             MobileNumberEntry.Text?.Trim()
             ?? string.Empty;
+
 
         var password =
             PasswordEntry.Text
@@ -178,7 +198,10 @@ public partial class LoginPage : ContentPage
         {
             _isLoggingIn = true;
 
-            LoginButton.IsEnabled = false;
+
+            LoginButton.IsEnabled =
+                false;
+
 
             LoginButton.Text =
                 "Signing in...";
@@ -194,6 +217,10 @@ public partial class LoginPage : ContentPage
                     password);
 
 
+            // =====================================================
+            // VALIDATE RESPONSE
+            // =====================================================
+
             if (response == null)
             {
                 ShowError(
@@ -203,57 +230,74 @@ public partial class LoginPage : ContentPage
             }
 
 
-            // =====================================================
-            // STORE AUTHENTICATION DATA
-            // =====================================================
-
-            await SecureStorage.Default.SetAsync(
-                "access_token",
-                response.AccessToken);
-
-            var savedToken =
-    await SecureStorage.Default.GetAsync(
-        "access_token");
-
-            if (string.IsNullOrWhiteSpace(savedToken))
+            if (string.IsNullOrWhiteSpace(
+                    response.AccessToken))
             {
-                await DisplayAlertAsync(
-                    "Token Error",
-                    "Login succeeded, but access token was not saved.",
-                    "OK");
+                ShowError(
+                    "Login succeeded, but the server did not return an access token.");
+
+                return;
             }
 
-            await SecureStorage.Default.SetAsync(
-                "refresh_token",
-                response.RefreshToken);
 
-            await SecureStorage.Default.SetAsync(
-                "user_id",
-                response.UserId.ToString());
+            if (string.IsNullOrWhiteSpace(
+                    response.RefreshToken))
+            {
+                ShowError(
+                    "Login succeeded, but the server did not return a refresh token.");
 
-            await SecureStorage.Default.SetAsync(
-                "client_id",
-                response.ClientId.ToString());
+                return;
+            }
 
-            await SecureStorage.Default.SetAsync(
-                "full_name",
-                response.FullName);
 
-            await SecureStorage.Default.SetAsync(
-                "mobile_number",
-                response.MobileNumber);
+            // =====================================================
+            // SAVE COMPLETE AUTH SESSION
+            // =====================================================
+            //
+            // AuthSessionService is the single source of truth
+            // for SecureStorage.
+            //
+            // It stores:
+            //   access token
+            //   refresh token
+            //   access token expiry
+            //   user information
+            //   client information
+            //
+            // =====================================================
 
-            await SecureStorage.Default.SetAsync(
-                "user_role",
-                response.Role);
+            await _authSessionService.SaveSessionAsync(
+                response);
 
-            await SecureStorage.Default.SetAsync(
-                "client_name",
-                response.ClientName);
 
-            await SecureStorage.Default.SetAsync(
-                "access_token_expires_at",
-                response.AccessTokenExpiresAt.ToString("O"));
+            // =====================================================
+            // VERIFY SESSION WAS SAVED
+            // =====================================================
+
+            var savedAccessToken =
+                await _authSessionService
+                    .GetAccessTokenAsync();
+
+
+            var savedRefreshToken =
+                await _authSessionService
+                    .GetRefreshTokenAsync();
+
+
+            if (string.IsNullOrWhiteSpace(
+                    savedAccessToken) ||
+                string.IsNullOrWhiteSpace(
+                    savedRefreshToken))
+            {
+                await _authSessionService
+                    .ClearSessionAsync();
+
+
+                ShowError(
+                    "Login succeeded, but the authentication session could not be saved.");
+
+                return;
+            }
 
 
             // =====================================================
@@ -292,7 +336,10 @@ public partial class LoginPage : ContentPage
         {
             _isLoggingIn = false;
 
-            LoginButton.IsEnabled = true;
+
+            LoginButton.IsEnabled =
+                true;
+
 
             LoginButton.Text =
                 "Login  →";
@@ -310,6 +357,7 @@ public partial class LoginPage : ContentPage
         ErrorLabel.Text =
             message;
 
+
         ErrorContainer.IsVisible =
             true;
     }
@@ -319,6 +367,7 @@ public partial class LoginPage : ContentPage
     {
         ErrorLabel.Text =
             string.Empty;
+
 
         ErrorContainer.IsVisible =
             false;

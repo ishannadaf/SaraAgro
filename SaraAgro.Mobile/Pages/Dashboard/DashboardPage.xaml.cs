@@ -392,12 +392,10 @@ public partial class DashboardPage : ContentPage
     // =========================================================
 
     private async void SettingsTapped(
-        object? sender,
-        TappedEventArgs e)
+    object? sender,
+    TappedEventArgs e)
     {
-        await DisplayAlertAsync(
-            "Settings",
-            "Settings screen will be connected next.",
-            "OK");
+        await Shell.Current.GoToAsync(
+            "SettingsPage");
     }
 }

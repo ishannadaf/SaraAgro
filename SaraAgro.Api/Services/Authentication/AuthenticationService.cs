@@ -6,6 +6,7 @@ using SaraAgro.Api.Interfaces.Authentication;
 using SaraAgro.Api.Interfaces.Otp;
 using SaraAgro.Api.Models;
 using ClientModel = SaraAgro.Api.Models.Client;
+
 namespace SaraAgro.Api.Services.Authentication;
 
 public class AuthenticationService : IAuthenticationService
@@ -49,6 +50,7 @@ public class AuthenticationService : IAuthenticationService
             string.IsNullOrWhiteSpace(request.Email)
                 ? null
                 : request.Email.Trim();
+
 
         // -----------------------------------------------------
         // BASIC VALIDATION
@@ -106,16 +108,8 @@ public class AuthenticationService : IAuthenticationService
                 cancellationToken);
 
 
-
-        //if (!otpVerified)
-        //{
-        //    throw new InvalidOperationException(
-        //        "Invalid or expired OTP.");
-        //}
-
-
         // -----------------------------------------------------
-        // HASH PASSWORD
+        // PASSWORD
         // -----------------------------------------------------
 
         var passwordHash =
@@ -167,7 +161,7 @@ public class AuthenticationService : IAuthenticationService
 
 
             // -------------------------------------------------
-            // CREATE OWNER USER
+            // CREATE OWNER
             // -------------------------------------------------
 
             var user =
@@ -306,13 +300,170 @@ public class AuthenticationService : IAuthenticationService
 
 
         // -----------------------------------------------------
+        // CREATE TOKEN PAIR
+        // -----------------------------------------------------
+
+        return await CreateTokenPairAsync(
+            user,
+            user.Client.Name,
+            cancellationToken);
+    }
+
+
+    // =========================================================
+    // REFRESH
+    // =========================================================
+
+    public async Task<LoginResponse> RefreshAsync(
+        string refreshToken,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(refreshToken))
+        {
+            throw new UnauthorizedAccessException(
+                "Refresh token is required.");
+        }
+
+
+        var refreshTokenHash =
+            _jwtTokenService.HashRefreshToken(
+                refreshToken);
+
+
+        // -----------------------------------------------------
+        // FIND ACTIVE REFRESH TOKEN
+        // -----------------------------------------------------
+
+        var storedToken =
+            await _dbContext.RefreshTokens
+                .Include(x => x.User)
+                .ThenInclude(x => x!.Client)
+                .FirstOrDefaultAsync(
+                    x =>
+                        x.TokenHash == refreshTokenHash &&
+                        x.RevokedAt == null &&
+                        x.ExpiresAt > DateTime.UtcNow,
+                    cancellationToken);
+
+
+        if (storedToken == null ||
+            storedToken.User == null)
+        {
+            throw new UnauthorizedAccessException(
+                "Your session has expired. Please login again.");
+        }
+
+
+        var user =
+            storedToken.User;
+
+
+        // -----------------------------------------------------
+        // USER ACTIVE
+        // -----------------------------------------------------
+
+        if (!user.IsActive)
+        {
+            throw new UnauthorizedAccessException(
+                "Your account is inactive. Please contact your administrator.");
+        }
+
+
+        // -----------------------------------------------------
+        // CLIENT ACTIVE
+        // -----------------------------------------------------
+
+        if (user.Client == null ||
+            !user.Client.IsActive)
+        {
+            throw new UnauthorizedAccessException(
+                "Your client account is inactive.");
+        }
+
+
+        // -----------------------------------------------------
+        // ROTATE OLD REFRESH TOKEN
+        // -----------------------------------------------------
+
+        storedToken.RevokedAt =
+            DateTime.UtcNow;
+
+
+        // -----------------------------------------------------
+        // CREATE NEW TOKEN PAIR
+        // -----------------------------------------------------
+
+        var response =
+            await CreateTokenPairAsync(
+                user,
+                user.Client.Name,
+                cancellationToken);
+
+
+        await _dbContext.SaveChangesAsync(
+            cancellationToken);
+
+
+        return response;
+    }
+
+
+    // =========================================================
+    // LOGOUT
+    // =========================================================
+
+    public async Task LogoutAsync(
+        string refreshToken,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(refreshToken))
+            return;
+
+
+        var refreshTokenHash =
+            _jwtTokenService.HashRefreshToken(
+                refreshToken);
+
+
+        var storedToken =
+            await _dbContext.RefreshTokens
+                .FirstOrDefaultAsync(
+                    x =>
+                        x.TokenHash == refreshTokenHash &&
+                        x.RevokedAt == null,
+                    cancellationToken);
+
+
+        if (storedToken == null)
+            return;
+
+
+        storedToken.RevokedAt =
+            DateTime.UtcNow;
+
+
+        await _dbContext.SaveChangesAsync(
+            cancellationToken);
+    }
+
+
+    // =========================================================
+    // CREATE ACCESS + REFRESH TOKEN
+    // =========================================================
+
+    private async Task<LoginResponse> CreateTokenPairAsync(
+        User user,
+        string clientName,
+        CancellationToken cancellationToken)
+    {
+        // -----------------------------------------------------
         // ACCESS TOKEN
         // -----------------------------------------------------
 
         var accessToken =
             _jwtTokenService.GenerateAccessToken(
                 user,
-                user.Client.Name);
+                clientName);
 
 
         var accessTokenExpiresAt =
@@ -388,7 +539,7 @@ public class AuthenticationService : IAuthenticationService
                 user.ClientId,
 
             ClientName =
-                user.Client.Name
+                clientName
         };
     }
 }
