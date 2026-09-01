@@ -33,8 +33,11 @@ public sealed class AuthenticationApiService
     {
         var request = new LoginRequest
         {
-            MobileNumber = mobileNumber.Trim(),
-            Password = password
+            MobileNumber =
+                mobileNumber.Trim(),
+
+            Password =
+                password
         };
 
 
@@ -48,9 +51,111 @@ public sealed class AuthenticationApiService
 
         if (response.IsSuccessStatusCode)
         {
-            return await response.Content.ReadFromJsonAsync<LoginResponse>(
+            return await response.Content
+                .ReadFromJsonAsync<LoginResponse>(
+                    JsonOptions,
+                    cancellationToken);
+        }
+
+
+        throw await CreateApiExceptionAsync(
+            response,
+            cancellationToken);
+    }
+
+
+    // =========================================================
+    // REFRESH SESSION
+    // =========================================================
+
+    public async Task<LoginResponse?> RefreshAsync(
+        string refreshToken,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(refreshToken))
+        {
+            throw new UnauthorizedAccessException(
+                "Refresh token is missing.");
+        }
+
+
+        var request =
+            new RefreshTokenRequest
+            {
+                RefreshToken =
+                    refreshToken
+            };
+
+
+        using var response =
+            await _httpClient.PostAsJsonAsync(
+                "api/Authentication/refresh",
+                request,
                 JsonOptions,
                 cancellationToken);
+
+
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content
+                .ReadFromJsonAsync<LoginResponse>(
+                    JsonOptions,
+                    cancellationToken);
+        }
+
+
+        if (response.StatusCode ==
+            HttpStatusCode.Unauthorized)
+        {
+            throw new UnauthorizedAccessException(
+                "Your session has expired. Please login again.");
+        }
+
+
+        throw await CreateApiExceptionAsync(
+            response,
+            cancellationToken);
+    }
+
+
+    // =========================================================
+    // LOGOUT
+    // =========================================================
+
+    public async Task LogoutAsync(
+        string refreshToken,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(refreshToken))
+            return;
+
+
+        var request =
+            new RefreshTokenRequest
+            {
+                RefreshToken =
+                    refreshToken
+            };
+
+
+        using var response =
+            await _httpClient.PostAsJsonAsync(
+                "api/Authentication/logout",
+                request,
+                JsonOptions,
+                cancellationToken);
+
+
+        if (response.IsSuccessStatusCode)
+            return;
+
+
+        if (response.StatusCode ==
+            HttpStatusCode.Unauthorized)
+        {
+            // Even if the server no longer accepts the token,
+            // the local session can still be cleared.
+            return;
         }
 
 
@@ -78,9 +183,10 @@ public sealed class AuthenticationApiService
 
         if (response.IsSuccessStatusCode)
         {
-            return await response.Content.ReadFromJsonAsync<RegisterResponse>(
-                JsonOptions,
-                cancellationToken);
+            return await response.Content
+                .ReadFromJsonAsync<RegisterResponse>(
+                    JsonOptions,
+                    cancellationToken);
         }
 
 
@@ -94,38 +200,59 @@ public sealed class AuthenticationApiService
     // API ERROR
     // =========================================================
 
-    private static async Task<Exception> CreateApiExceptionAsync(
-    HttpResponseMessage response,
-    CancellationToken cancellationToken)
+    private static async Task<Exception>
+        CreateApiExceptionAsync(
+            HttpResponseMessage response,
+            CancellationToken cancellationToken)
     {
         var responseText =
-            await response.Content.ReadAsStringAsync(cancellationToken);
+            await response.Content
+                .ReadAsStringAsync(
+                    cancellationToken);
+
 
         if (!string.IsNullOrWhiteSpace(responseText))
         {
             try
             {
                 using var document =
-                    JsonDocument.Parse(responseText);
+                    JsonDocument.Parse(
+                        responseText);
 
-                var root = document.RootElement;
+                var root =
+                    document.RootElement;
 
-                // ASP.NET Core validation response
-                if (root.TryGetProperty("errors", out var errors))
+
+                // -------------------------------------------------
+                // ASP.NET VALIDATION ERROR
+                // -------------------------------------------------
+
+                if (root.TryGetProperty(
+                        "errors",
+                        out var errors))
                 {
-                    var messages = new List<string>();
+                    var messages =
+                        new List<string>();
 
-                    foreach (var property in errors.EnumerateObject())
+
+                    foreach (
+                        var property
+                        in errors.EnumerateObject())
                     {
-                        foreach (var error in property.Value.EnumerateArray())
+                        foreach (
+                            var error
+                            in property.Value.EnumerateArray())
                         {
-                            if (error.ValueKind == JsonValueKind.String)
+                            if (error.ValueKind ==
+                                JsonValueKind.String)
                             {
                                 messages.Add(
-                                    $"{property.Name}: {error.GetString()}");
+                                    $"{property.Name}: " +
+                                    $"{error.GetString()}");
                             }
                         }
                     }
+
 
                     if (messages.Count > 0)
                     {
@@ -136,24 +263,41 @@ public sealed class AuthenticationApiService
                     }
                 }
 
-                // Normal API error
-                if (root.TryGetProperty("message", out var message))
-                {
-                    var messageText = message.GetString();
 
-                    if (!string.IsNullOrWhiteSpace(messageText))
+                // -------------------------------------------------
+                // NORMAL API ERROR
+                // -------------------------------------------------
+
+                if (root.TryGetProperty(
+                        "message",
+                        out var message))
+                {
+                    var messageText =
+                        message.GetString();
+
+
+                    if (!string.IsNullOrWhiteSpace(
+                            messageText))
                     {
-                        return new InvalidOperationException(messageText);
+                        return new InvalidOperationException(
+                            messageText);
                     }
                 }
 
-                if (root.TryGetProperty("title", out var title))
-                {
-                    var titleText = title.GetString();
 
-                    if (!string.IsNullOrWhiteSpace(titleText))
+                if (root.TryGetProperty(
+                        "title",
+                        out var title))
+                {
+                    var titleText =
+                        title.GetString();
+
+
+                    if (!string.IsNullOrWhiteSpace(
+                            titleText))
                     {
-                        return new InvalidOperationException(titleText);
+                        return new InvalidOperationException(
+                            titleText);
                     }
                 }
             }
@@ -163,6 +307,7 @@ public sealed class AuthenticationApiService
             }
         }
 
+
         return response.StatusCode switch
         {
             HttpStatusCode.Unauthorized =>
@@ -171,15 +316,16 @@ public sealed class AuthenticationApiService
 
             HttpStatusCode.BadRequest =>
                 new InvalidOperationException(
-                    "Invalid registration request."),
+                    "Invalid request."),
 
             HttpStatusCode.Conflict =>
                 new InvalidOperationException(
-                    "The registration conflicts with an existing account."),
+                    "The request conflicts with existing data."),
 
             _ =>
                 new HttpRequestException(
-                    $"Authentication request failed ({(int)response.StatusCode}).")
+                    $"Authentication request failed " +
+                    $"({(int)response.StatusCode}).")
         };
     }
 }
@@ -192,11 +338,25 @@ public sealed class AuthenticationApiService
 public sealed class LoginRequest
 {
     [JsonPropertyName("mobileNumber")]
-    public string MobileNumber { get; set; } = string.Empty;
+    public string MobileNumber { get; set; } =
+        string.Empty;
 
 
     [JsonPropertyName("password")]
-    public string Password { get; set; } = string.Empty;
+    public string Password { get; set; } =
+        string.Empty;
+}
+
+
+// =============================================================
+// REFRESH TOKEN REQUEST
+// =============================================================
+
+public sealed class RefreshTokenRequest
+{
+    [JsonPropertyName("refreshToken")]
+    public string RefreshToken { get; set; } =
+        string.Empty;
 }
 
 
@@ -207,11 +367,13 @@ public sealed class LoginRequest
 public sealed class LoginResponse
 {
     [JsonPropertyName("accessToken")]
-    public string AccessToken { get; set; } = string.Empty;
+    public string AccessToken { get; set; } =
+        string.Empty;
 
 
     [JsonPropertyName("refreshToken")]
-    public string RefreshToken { get; set; } = string.Empty;
+    public string RefreshToken { get; set; } =
+        string.Empty;
 
 
     [JsonPropertyName("accessTokenExpiresAt")]
@@ -223,15 +385,18 @@ public sealed class LoginResponse
 
 
     [JsonPropertyName("fullName")]
-    public string FullName { get; set; } = string.Empty;
+    public string FullName { get; set; } =
+        string.Empty;
 
 
     [JsonPropertyName("mobileNumber")]
-    public string MobileNumber { get; set; } = string.Empty;
+    public string MobileNumber { get; set; } =
+        string.Empty;
 
 
     [JsonPropertyName("role")]
-    public string Role { get; set; } = string.Empty;
+    public string Role { get; set; } =
+        string.Empty;
 
 
     [JsonPropertyName("clientId")]
@@ -239,7 +404,8 @@ public sealed class LoginResponse
 
 
     [JsonPropertyName("clientName")]
-    public string ClientName { get; set; } = string.Empty;
+    public string ClientName { get; set; } =
+        string.Empty;
 }
 
 
@@ -250,15 +416,18 @@ public sealed class LoginResponse
 public sealed class RegisterRequest
 {
     [JsonPropertyName("businessName")]
-    public string BusinessName { get; set; } = string.Empty;
+    public string BusinessName { get; set; } =
+        string.Empty;
 
 
     [JsonPropertyName("ownerName")]
-    public string OwnerName { get; set; } = string.Empty;
+    public string OwnerName { get; set; } =
+        string.Empty;
 
 
     [JsonPropertyName("mobileNumber")]
-    public string MobileNumber { get; set; } = string.Empty;
+    public string MobileNumber { get; set; } =
+        string.Empty;
 
 
     [JsonPropertyName("email")]
@@ -270,11 +439,13 @@ public sealed class RegisterRequest
 
 
     [JsonPropertyName("password")]
-    public string Password { get; set; } = string.Empty;
+    public string Password { get; set; } =
+        string.Empty;
 
 
     [JsonPropertyName("otp")]
-    public string Otp { get; set; } = string.Empty;
+    public string Otp { get; set; } =
+        string.Empty;
 }
 
 
@@ -289,24 +460,10 @@ public sealed class RegisterResponse
 
 
     [JsonPropertyName("message")]
-    public string Message { get; set; } = string.Empty;
+    public string Message { get; set; } =
+        string.Empty;
 
 
     [JsonPropertyName("userId")]
     public int UserId { get; set; }
-}
-
-
-// =============================================================
-// API ERROR RESPONSE
-// =============================================================
-
-internal sealed class ApiErrorResponse
-{
-    [JsonPropertyName("message")]
-    public string? Message { get; set; }
-
-
-    [JsonPropertyName("title")]
-    public string? Title { get; set; }
 }

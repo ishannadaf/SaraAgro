@@ -14,7 +14,8 @@ public class AuthenticationController : ControllerBase
     public AuthenticationController(
         IAuthenticationService authenticationService)
     {
-        _authenticationService = authenticationService;
+        _authenticationService =
+            authenticationService;
     }
 
 
@@ -54,4 +55,56 @@ public class AuthenticationController : ControllerBase
 
         return Ok(response);
     }
+
+
+    // =========================================================
+    // REFRESH TOKEN
+    // =========================================================
+
+    [AllowAnonymous]
+    [HttpPost("refresh")]
+    public async Task<ActionResult<LoginResponse>> Refresh(
+        [FromBody] RefreshTokenRequest request,
+        CancellationToken cancellationToken)
+    {
+        var response =
+            await _authenticationService.RefreshAsync(
+                request.RefreshToken,
+                cancellationToken);
+
+        return Ok(response);
+    }
+
+
+    // =========================================================
+    // LOGOUT
+    // =========================================================
+
+    [AllowAnonymous]
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout(
+        [FromBody] RefreshTokenRequest request,
+        CancellationToken cancellationToken)
+    {
+        await _authenticationService.LogoutAsync(
+            request.RefreshToken,
+            cancellationToken);
+
+        return Ok(new
+        {
+            success = true,
+            message = "Logged out successfully."
+        });
+    }
+}
+
+
+// =============================================================
+// REFRESH / LOGOUT REQUEST
+// =============================================================
+
+public sealed class RefreshTokenRequest
+{
+    public string RefreshToken { get; set; } =
+        string.Empty;
 }

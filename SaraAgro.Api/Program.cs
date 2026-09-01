@@ -113,13 +113,20 @@ if (app.Environment.IsDevelopment())
 }
 app.UseSwagger();
 app.UseSwaggerUI();
-app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
-
-app.MapControllers();
+app.MapGet(
+    "/health",
+    () => Results.Ok(new
+    {
+        status = "healthy",
+        service = "SaraAgro.Api"
+    }));
 
 app.Run();
