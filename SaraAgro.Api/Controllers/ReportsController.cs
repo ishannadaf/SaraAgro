@@ -158,10 +158,18 @@ public class ReportsController : ControllerBase
                     date,
                     cancellationToken);
 
+        var financial =
+            await _reportsService
+                .GetFinancialSummaryAsync(
+                    clientId,
+                    date,
+                    cancellationToken);
+
         var pdf =
             _reportPdfService
                 .GenerateDailyReportPdf(
-                    report);
+                    report,
+                    financial);
 
         var fileName =
             $"DailyReport_{report.Date:yyyyMMdd}.pdf";
@@ -217,10 +225,18 @@ public class ReportsController : ControllerBase
                     month,
                     cancellationToken);
 
+        var financial =
+            await _reportsService
+                .GetFinancialSummaryAsync(
+                    clientId,
+                    month,
+                    cancellationToken);
+
         var pdf =
             _reportPdfService
                 .GenerateMonthlyReportPdf(
-                    report);
+                    report,
+                    financial);
 
         var fileName =
             $"MonthlyReport_{report.Month:yyyyMM}.pdf";
@@ -351,6 +367,29 @@ public class ReportsController : ControllerBase
             pdf,
             "application/pdf",
             fileName);
+    }
+
+    // =========================================================
+    // FINANCIAL SUMMARY
+    // =========================================================
+
+    [HttpGet("financial-summary")]
+    public async Task<ActionResult<FinancialSummaryResponse>>
+        GetFinancialSummary(
+            [FromQuery] DateTime date,
+            CancellationToken cancellationToken)
+    {
+        var clientId =
+            User.GetClientId();
+
+        var result =
+            await _reportsService
+                .GetFinancialSummaryAsync(
+                    clientId,
+                    date,
+                    cancellationToken);
+
+        return Ok(result);
     }
 
 

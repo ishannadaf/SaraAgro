@@ -90,33 +90,57 @@ public sealed class MilkDistributionApiService
     }
 
     public async Task<MilkDistributionResponse> CreateDistributionAsync(
-        int customerId,
-        DateTime distributionDate,
-        string session,
-        string milkType,
-        decimal quantity,
-        CancellationToken cancellationToken = default)
+    int customerId,
+    DateTime distributionDate,
+    string session,
+    string milkType,
+    decimal quantity,
+    CancellationToken cancellationToken = default)
     {
+        // IMPORTANT:
+        // DistributionDate is a business date, NOT a timestamp.
+        // Force it to Unspecified so JSON does not convert it to UTC.
+        var businessDate =
+            DateTime.SpecifyKind(
+                distributionDate.Date,
+                DateTimeKind.Unspecified);
+
         var body = new CreateMilkDistributionRequest
         {
             CustomerId = customerId,
-            DistributionDate = distributionDate.Date,
-            Session = session.Trim().ToUpperInvariant(),
-            MilkType = milkType.Trim(),
-            Quantity = decimal.Round(quantity, 2)
+
+            DistributionDate = businessDate,
+
+            Session =
+                session.Trim().ToUpperInvariant(),
+
+            MilkType =
+                milkType.Trim(),
+
+            Quantity =
+                decimal.Round(
+                    quantity,
+                    2,
+                    MidpointRounding.AwayFromZero)
         };
 
-        using var request = new HttpRequestMessage(
-            HttpMethod.Post,
-            "api/MilkDistribution")
-        {
-            Content = JsonContent.Create(body, options: JsonOptions)
-        };
+        using var request =
+            new HttpRequestMessage(
+                HttpMethod.Post,
+                "api/MilkDistribution")
+            {
+                Content =
+                    JsonContent.Create(
+                        body,
+                        options: JsonOptions)
+            };
 
         await AddAuthorizationHeaderAsync(request);
 
         using var response =
-            await _httpClient.SendAsync(request, cancellationToken);
+            await _httpClient.SendAsync(
+                request,
+                cancellationToken);
 
         if (response.IsSuccessStatusCode)
         {
@@ -131,7 +155,9 @@ public sealed class MilkDistributionApiService
                     "Invalid response received from the server.");
         }
 
-        throw await CreateApiExceptionAsync(response, cancellationToken);
+        throw await CreateApiExceptionAsync(
+            response,
+            cancellationToken);
     }
 
     public async Task<MilkDistributionResponse?> UpdateDistributionAsync(

@@ -24,6 +24,8 @@ using SaraAgro.Api.Services.RateGroup;
 using SaraAgro.Api.Services.RateMaster;
 using SaraAgro.Api.Services.Reports;
 using SaraAgro.Api.Services.Sms;
+using SaraAgro.Api.Interfaces.Expenses;
+using SaraAgro.Api.Services.Expenses;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -66,6 +68,7 @@ builder.Services.AddScoped<IMilkDistributionService, MilkDistributionService>();
 
 // Billing
 builder.Services.AddScoped<IBillingService, BillingService>();
+builder.Services.AddScoped<IExpenseService, ExpenseService>();
 
 // Reports
 builder.Services.AddScoped<IReportsService, ReportsService>();

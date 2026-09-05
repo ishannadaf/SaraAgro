@@ -1,8 +1,11 @@
 ﻿using SaraAgro.Mobile.Pages.Billing;
+using SaraAgro.Mobile.Pages.Expenses;
 using SaraAgro.Mobile.Pages.MilkDistribution;
 using SaraAgro.Mobile.Pages.Reports;
 using SaraAgro.Mobile.Services.Api.Customer;
 using SaraAgro.Mobile.Services.Api.MilkDistribution;
+using SaraAgro.Mobile.Services.Api.Reports;
+using SaraAgro.Mobile.Services.Authentication;
 
 namespace SaraAgro.Mobile.Pages.Dashboard;
 
@@ -12,6 +15,8 @@ public partial class DashboardPage : ContentPage
 
     private MilkDistributionApiService? _milkDistributionApiService;
     private CustomerApiService? _customerApiService;
+    private ReportsApiService? _reportsApiService;
+    private AuthSessionService? _authSessionService;
 
 
     // =========================================================
@@ -63,7 +68,9 @@ public partial class DashboardPage : ContentPage
             // Give DI one short opportunity to become available
             // when Dashboard is opened directly after Login.
             if (_milkDistributionApiService == null ||
-                _customerApiService == null)
+                _customerApiService == null ||
+                _reportsApiService == null ||
+                _authSessionService == null)
             {
                 await Task.Delay(150);
 
@@ -72,7 +79,8 @@ public partial class DashboardPage : ContentPage
 
 
             if (_milkDistributionApiService == null ||
-                _customerApiService == null)
+                _customerApiService == null ||
+                _reportsApiService == null)
             {
                 throw new InvalidOperationException(
                     "Dashboard services could not be initialized.");
@@ -85,6 +93,30 @@ public partial class DashboardPage : ContentPage
 
             var today =
                 DateTime.Today;
+
+            // =================================================
+            // LOGGED-IN USER / DAIRY
+            // =================================================
+
+            var dairyName =
+                await _authSessionService
+                    .GetClientNameAsync();
+
+            var ownerName =
+                await _authSessionService
+                    .GetFullNameAsync();
+
+
+            DairyNameLabel.Text =
+                string.IsNullOrWhiteSpace(dairyName)
+                    ? "Your Dairy"
+                    : dairyName;
+
+
+            OwnerNameLabel.Text =
+                string.IsNullOrWhiteSpace(ownerName)
+                    ? "Dairy Owner"
+                    : ownerName;
 
             TodayDateLabel.Text =
                 today.ToString("dd MMM yyyy");
@@ -108,11 +140,17 @@ public partial class DashboardPage : ContentPage
                 _customerApiService
                     .GetCustomersAsync();
 
+            var financialSummaryTask =
+                _reportsApiService
+                    .GetFinancialSummaryAsync(
+                        today);
+
 
             await Task.WhenAll(
                 todaySummaryTask,
                 monthSummaryTask,
-                customersTask);
+                customersTask,
+                financialSummaryTask);
 
 
             var summary =
@@ -123,6 +161,38 @@ public partial class DashboardPage : ContentPage
 
             var customers =
                 await customersTask;
+
+            var financialSummary =
+                await financialSummaryTask;
+
+
+            // =================================================
+            // FINANCIAL SUMMARY
+            // =================================================
+
+            TodayRevenueLabel.Text =
+                $"₹{financialSummary.TodayRevenue:0.00}";
+
+            TodayCollectionLabel.Text =
+                $"₹{financialSummary.TodayCollection:0.00}";
+
+            TodayExpenseLabel.Text =
+                $"₹{financialSummary.TodayExpense:0.00}";
+
+            TodayProfitLabel.Text =
+                $"₹{financialSummary.TodayProfit:0.00}";
+
+            MonthlyRevenueLabel.Text =
+                $"₹{financialSummary.MonthlyRevenue:0.00}";
+
+            MonthlyCollectionLabel.Text =
+                $"₹{financialSummary.MonthlyCollection:0.00}";
+
+            MonthlyExpenseLabel.Text =
+                $"₹{financialSummary.MonthlyExpense:0.00}";
+
+            MonthlyProfitLabel.Text =
+                $"₹{financialSummary.MonthlyProfit:0.00}";
 
 
             // =================================================
@@ -285,6 +355,16 @@ public partial class DashboardPage : ContentPage
         _customerApiService ??=
             services.GetService<
                 CustomerApiService>();
+
+
+        _reportsApiService ??=
+            services.GetService<
+                ReportsApiService>();
+
+
+        _authSessionService ??=
+            services.GetService<
+                AuthSessionService>();
     }
 
 
@@ -375,12 +455,25 @@ public partial class DashboardPage : ContentPage
 
 
     // =========================================================
+    // EXPENSES
+    // =========================================================
+
+    private async void ExpensesTapped(
+        object? sender,
+        TappedEventArgs e)
+    {
+        await Shell.Current.GoToAsync(
+            nameof(ExpensePage));
+    }
+
+
+    // =========================================================
     // REPORTS
     // =========================================================
 
     private async void ReportsTapped(
-    object? sender,
-    TappedEventArgs e)
+        object? sender,
+        TappedEventArgs e)
     {
         await Shell.Current.GoToAsync(
             nameof(ReportsPage));
@@ -392,8 +485,8 @@ public partial class DashboardPage : ContentPage
     // =========================================================
 
     private async void SettingsTapped(
-    object? sender,
-    TappedEventArgs e)
+        object? sender,
+        TappedEventArgs e)
     {
         await Shell.Current.GoToAsync(
             "SettingsPage");

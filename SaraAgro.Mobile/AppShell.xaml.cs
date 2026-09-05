@@ -4,6 +4,7 @@ using SaraAgro.Mobile.Pages.RateGroup;
 using SaraAgro.Mobile.Pages.Reports;
 using SaraAgro.Mobile.Pages.Settings;
 namespace SaraAgro.Mobile;
+using SaraAgro.Mobile.Pages.Expenses;
 
 public partial class AppShell : Shell
 {
@@ -84,11 +85,28 @@ public partial class AppShell : Shell
             typeof(ReportsPage));
 
         // =====================================================
+        // EXPENSES
+        // =====================================================
+
+        Routing.RegisterRoute(
+            nameof(ExpensePage),
+            typeof(ExpensePage));
+
+        Routing.RegisterRoute(
+            nameof(ExpenseAccountPage),
+            typeof(ExpenseAccountPage));
+
+        Routing.RegisterRoute(
+            nameof(AddExpensePage),
+            typeof(AddExpensePage));
+
+        // =====================================================
         // SETTINGS
         // =====================================================
 
         Routing.RegisterRoute(
             "SettingsPage",
             typeof(SettingsPage));
+
     }
 }

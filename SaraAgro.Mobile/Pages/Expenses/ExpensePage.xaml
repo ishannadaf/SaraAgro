@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="SaraAgro.Mobile.Pages.Expenses.ExpensePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Expenses"
+    BackgroundColor="{AppThemeBinding Light=#F5F7FA, Dark=#121212}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- HEADER -->
+        <Border
+            Grid.Row="0"
+            Padding="20,18"
+            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+            StrokeThickness="0">
+
+            <Grid ColumnDefinitions="*,Auto">
+
+                <VerticalStackLayout Spacing="3">
+
+                    <Label
+                        Text="Expenses"
+                        FontSize="26"
+                        FontAttributes="Bold"
+                        TextColor="{AppThemeBinding Light=#1A1A1A, Dark=#FFFFFF}" />
+
+                    <Label
+                        x:Name="MonthLabel"
+                        Text="September 2026"
+                        FontSize="14"
+                        TextColor="{AppThemeBinding Light=#6B7280, Dark=#AAAAAA}" />
+
+                </VerticalStackLayout>
+
+                <Button
+                    Grid.Column="1"
+                    Text="⚙"
+                    FontSize="22"
+                    WidthRequest="48"
+                    HeightRequest="48"
+                    CornerRadius="24"
+                    BackgroundColor="{AppThemeBinding Light=#EEF2F7, Dark=#2A2A2A}"
+                    TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
+                    Clicked="ManageAccountsClicked" />
+
+            </Grid>
+
+        </Border>
+
+
+        <!-- CONTENT -->
+        <ScrollView Grid.Row="1">
+
+            <VerticalStackLayout
+                Padding="16,18,16,30"
+                Spacing="16">
+
+
+                <!-- TOTAL EXPENSE CARD -->
+                <Border
+                    Padding="20"
+                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                    StrokeThickness="0">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="6">
+
+                        <Label
+                            Text="Total Expenses"
+                            FontSize="14"
+                            TextColor="{AppThemeBinding Light=#6B7280, Dark=#AAAAAA}" />
+
+                        <Label
+                            x:Name="TotalExpensesLabel"
+                            Text="₹ 0.00"
+                            FontSize="30"
+                            FontAttributes="Bold"
+                            TextColor="{AppThemeBinding Light=#D32F2F, Dark=#FF6B6B}" />
+
+                        <Label
+                            x:Name="ExpensePeriodLabel"
+                            Text="For September 2026"
+                            FontSize="12"
+                            TextColor="{AppThemeBinding Light=#888888, Dark=#999999}" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- ADD EXPENSE -->
+                <Button
+                    x:Name="AddExpenseButton"
+                    Text="+  Add Expense"
+                    HeightRequest="52"
+                    CornerRadius="14"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    BackgroundColor="{AppThemeBinding Light=#2E7D32, Dark=#43A047}"
+                    TextColor="White"
+                    Clicked="AddExpenseClicked" />
+
+
+                <!-- ACCOUNT SUMMARY -->
+                <Grid
+                    ColumnDefinitions="*,Auto"
+                    Margin="2,4,2,0">
+
+                    <Label
+                        Text="Expense Accounts"
+                        FontSize="19"
+                        FontAttributes="Bold"
+                        TextColor="{AppThemeBinding Light=#1A1A1A, Dark=#FFFFFF}" />
+
+                    <Button
+                        Grid.Column="1"
+                        Text="Manage"
+                        FontSize="13"
+                        Padding="12,5"
+                        BackgroundColor="Transparent"
+                        TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"
+                        Clicked="ManageAccountsClicked" />
+
+                </Grid>
+
+
+                <!-- ACCOUNT LIST -->
+                <Border
+                    Padding="0"
+                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                    StrokeThickness="0">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <CollectionView
+                        x:Name="AccountCollectionView"
+                        SelectionMode="None"
+                        EmptyView="No expense accounts found.">
+
+                        <CollectionView.ItemTemplate>
+
+                            <DataTemplate>
+
+                                <Grid
+                                    Padding="16,14"
+                                    ColumnDefinitions="*,Auto"
+                                    RowDefinitions="Auto,Auto">
+
+                                    <Label
+                                        Grid.Row="0"
+                                        Text="{Binding Name}"
+                                        FontSize="15"
+                                        FontAttributes="Bold"
+                                        TextColor="{AppThemeBinding Light=#222222, Dark=#FFFFFF}" />
+
+                                    <Label
+                                        Grid.Row="1"
+                                        Text="{Binding Description}"
+                                        FontSize="12"
+                                        LineBreakMode="TailTruncation"
+                                        TextColor="{AppThemeBinding Light=#888888, Dark=#999999}" />
+
+                                    <Label
+                                        Grid.Column="1"
+                                        Grid.RowSpan="2"
+                                        Text="{Binding TotalAmount, StringFormat='₹ {0:N2}'}"
+                                        FontSize="15"
+                                        FontAttributes="Bold"
+                                        VerticalOptions="Center"
+                                        TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}" />
+
+                                </Grid>
+
+                            </DataTemplate>
+
+                        </CollectionView.ItemTemplate>
+
+                    </CollectionView>
+
+                </Border>
+
+
+                <!-- RECENT EXPENSES -->
+                <Label
+                    Text="Recent Expenses"
+                    FontSize="19"
+                    FontAttributes="Bold"
+                    Margin="2,4,2,0"
+                    TextColor="{AppThemeBinding Light=#1A1A1A, Dark=#FFFFFF}" />
+
+
+                <Border
+                    Padding="0"
+                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                    StrokeThickness="0">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <CollectionView
+                        x:Name="ExpenseCollectionView"
+                        SelectionMode="None"
+                        EmptyView="No expenses found.">
+
+                        <CollectionView.ItemTemplate>
+
+                            <DataTemplate>
+
+                                <Grid
+                                    Padding="16,14"
+                                    ColumnDefinitions="*,Auto"
+                                    RowDefinitions="Auto,Auto,Auto">
+
+                                    <Label
+                                        Grid.Row="0"
+                                        Text="{Binding ExpenseAccountName}"
+                                        FontSize="15"
+                                        FontAttributes="Bold"
+                                        TextColor="{AppThemeBinding Light=#222222, Dark=#FFFFFF}" />
+
+                                    <Label
+                                        Grid.Row="1"
+                                        Text="{Binding Description}"
+                                        FontSize="12"
+                                        LineBreakMode="TailTruncation"
+                                        TextColor="{AppThemeBinding Light=#888888, Dark=#999999}" />
+
+                                    <Label
+                                        Grid.Row="2"
+                                        Text="{Binding ExpenseDate, StringFormat='{0:dd MMM yyyy}'}"
+                                        FontSize="11"
+                                        TextColor="{AppThemeBinding Light=#999999, Dark=#888888}" />
+
+                                    <Label
+                                        Grid.Column="1"
+                                        Grid.RowSpan="3"
+                                        Text="{Binding Amount, StringFormat='₹ {0:N2}'}"
+                                        FontSize="15"
+                                        FontAttributes="Bold"
+                                        VerticalOptions="Center"
+                                        TextColor="{AppThemeBinding Light=#D32F2F, Dark=#FF6B6B}" />
+
+                                </Grid>
+
+                            </DataTemplate>
+
+                        </CollectionView.ItemTemplate>
+
+                    </CollectionView>
+
+                </Border>
+
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+
+        <!-- LOADING -->
+        <Grid
+            x:Name="LoadingOverlay"
+            Grid.RowSpan="2"
+            IsVisible="False"
+            BackgroundColor="#80000000">
+
+            <ActivityIndicator
+                IsRunning="True"
+                WidthRequest="50"
+                HeightRequest="50"
+                VerticalOptions="Center"
+                HorizontalOptions="Center" />
+
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

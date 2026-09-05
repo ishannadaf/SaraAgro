@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="SaraAgro.Mobile.Pages.Expenses.AddExpensePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+    Title="Add Expense"
+    BackgroundColor="{AppThemeBinding Light=#F5F7FA, Dark=#121212}">
+
+    <Grid RowDefinitions="*,Auto"
+          Padding="16">
+
+        <ScrollView Grid.Row="0">
+
+            <VerticalStackLayout Spacing="16">
+
+                <VerticalStackLayout Spacing="3">
+                    <Label Text="Add Expense"
+                           FontSize="26"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#111827, Dark=White}" />
+
+                    <Label Text="Record a new business expense"
+                           FontSize="13"
+                           TextColor="Gray" />
+                </VerticalStackLayout>
+
+                <!-- Date -->
+                <VerticalStackLayout Spacing="6">
+
+                    <Label Text="Expense Date"
+                           FontSize="13"
+                           FontAttributes="Bold" />
+
+                    <DatePicker
+                        x:Name="ExpenseDatePicker"
+                        Format="dd MMM yyyy"
+                        MaximumDate="{x:Static sys:DateTime.Today}" />
+
+                </VerticalStackLayout>
+
+                <!-- Account -->
+                <VerticalStackLayout Spacing="6">
+
+                    <Label Text="Expense Account"
+                           FontSize="13"
+                           FontAttributes="Bold" />
+
+                    <Border
+                        Padding="14,4"
+                        Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#444444}"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10" />
+                        </Border.StrokeShape>
+
+                        <Grid ColumnDefinitions="*,Auto">
+
+                            <Label
+                                x:Name="AccountLabel"
+                                Text="Select account"
+                                VerticalOptions="Center"
+                                FontSize="15"
+                                TextColor="Gray" />
+
+                            <Label
+                                Grid.Column="1"
+                                Text="▼"
+                                VerticalOptions="Center"
+                                TextColor="Gray" />
+
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Tapped="AccountTapped" />
+                            </Grid.GestureRecognizers>
+
+                        </Grid>
+
+                    </Border>
+
+                </VerticalStackLayout>
+
+                <!-- Amount -->
+                <VerticalStackLayout Spacing="6">
+
+                    <Label Text="Amount"
+                           FontSize="13"
+                           FontAttributes="Bold" />
+
+                    <Entry
+                        x:Name="AmountEntry"
+                        Placeholder="Enter amount"
+                        Keyboard="Numeric"
+                        FontSize="16" />
+
+                </VerticalStackLayout>
+
+                <!-- Payment Mode -->
+                <VerticalStackLayout Spacing="6">
+
+                    <Label Text="Payment Mode"
+                           FontSize="13"
+                           FontAttributes="Bold" />
+
+                    <Border
+                        Padding="14,4"
+                        Stroke="{AppThemeBinding Light=#D1D5DB, Dark=#444444}"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10" />
+                        </Border.StrokeShape>
+
+                        <Grid ColumnDefinitions="*,Auto">
+
+                            <Label
+                                x:Name="PaymentModeLabel"
+                                Text="Cash"
+                                VerticalOptions="Center"
+                                FontSize="15" />
+
+                            <Label
+                                Grid.Column="1"
+                                Text="▼"
+                                VerticalOptions="Center"
+                                TextColor="Gray" />
+
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Tapped="PaymentModeTapped" />
+                            </Grid.GestureRecognizers>
+
+                        </Grid>
+
+                    </Border>
+
+                </VerticalStackLayout>
+
+                <!-- Description -->
+                <VerticalStackLayout Spacing="6">
+
+                    <Label Text="Description"
+                           FontSize="13"
+                           FontAttributes="Bold" />
+
+                    <Editor
+                        x:Name="DescriptionEditor"
+                        Placeholder="Optional description"
+                        AutoSize="TextChanges"
+                        MinimumHeightRequest="90" />
+
+                </VerticalStackLayout>
+
+                <!-- Reference -->
+                <VerticalStackLayout Spacing="6">
+
+                    <Label Text="Reference Number"
+                           FontSize="13"
+                           FontAttributes="Bold" />
+
+                    <Entry
+                        x:Name="ReferenceEntry"
+                        Placeholder="Optional bill / receipt number" />
+
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+        <!-- Save -->
+        <Button
+            Grid.Row="1"
+            x:Name="SaveButton"
+            Text="Save Expense"
+            Clicked="SaveExpenseClicked"
+            HeightRequest="52"
+            Margin="0,16,0,0"
+            CornerRadius="12"
+            FontAttributes="Bold"
+            FontSize="16"
+            BackgroundColor="{AppThemeBinding Light=#111827, Dark=#FFFFFF}"
+            TextColor="{AppThemeBinding Light=White, Dark=#111827}" />
+
+        <!-- Loading -->
+        <Grid
+            x:Name="LoadingOverlay"
+            Grid.RowSpan="2"
+            IsVisible="False"
+            BackgroundColor="#80000000">
+
+            <ActivityIndicator
+                IsRunning="True"
+                WidthRequest="45"
+                HeightRequest="45"
+                VerticalOptions="Center"
+                HorizontalOptions="Center" />
+
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

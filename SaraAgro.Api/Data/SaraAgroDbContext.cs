@@ -23,6 +23,8 @@ public class SaraAgroDbContext : DbContext
     public DbSet<Bill> Bills => Set<Bill>();
 
     public DbSet<BillPayment> BillPayments => Set<BillPayment>();
+    public DbSet<ExpenseAccount> ExpenseAccounts => Set<ExpenseAccount>();
+    public DbSet<Expense> Expenses => Set<Expense>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -357,6 +359,78 @@ public class SaraAgroDbContext : DbContext
                 x.ClientId,
                 x.DistributionDate,
                 x.Session
+            });
+        });
+
+        modelBuilder.Entity<ExpenseAccount>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+
+            entity.Property(x => x.Name)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.Property(x => x.Description)
+                .HasMaxLength(500);
+
+            entity.Property(x => x.IsActive)
+                .IsRequired();
+
+            entity.HasOne(x => x.Client)
+                .WithMany()
+                .HasForeignKey(x => x.ClientId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(x => new
+            {
+                x.ClientId,
+                x.Name
+            })
+            .IsUnique();
+        });
+
+        modelBuilder.Entity<Expense>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+
+            entity.Property(x => x.ExpenseDate)
+                .IsRequired();
+
+            entity.Property(x => x.Amount)
+                .HasPrecision(12, 2)
+                .IsRequired();
+
+            entity.Property(x => x.Description)
+                .HasMaxLength(500);
+
+            entity.Property(x => x.PaymentMode)
+                .IsRequired()
+                .HasMaxLength(30);
+
+            entity.Property(x => x.ReferenceNumber)
+                .HasMaxLength(100);
+
+            entity.HasOne(x => x.Client)
+                .WithMany()
+                .HasForeignKey(x => x.ClientId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(x => x.ExpenseAccount)
+                .WithMany(x => x.Expenses)
+                .HasForeignKey(x => x.ExpenseAccountId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(x => new
+            {
+                x.ClientId,
+                x.ExpenseDate
+            });
+
+            entity.HasIndex(x => new
+            {
+                x.ClientId,
+                x.ExpenseAccountId,
+                x.ExpenseDate
             });
         });
 

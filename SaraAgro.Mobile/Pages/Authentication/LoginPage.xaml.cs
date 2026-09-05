@@ -47,14 +47,12 @@ public partial class LoginPage : ContentPage
         if (string.IsNullOrEmpty(e.NewTextValue))
             return;
 
-
         var digitsOnly =
             new string(
                 e.NewTextValue
                     .Where(char.IsDigit)
                     .Take(10)
                     .ToArray());
-
 
         if (MobileNumberEntry.Text != digitsOnly)
         {
@@ -75,14 +73,11 @@ public partial class LoginPage : ContentPage
         _isPasswordVisible =
             !_isPasswordVisible;
 
-
         PasswordEntry.IsPassword =
             !_isPasswordVisible;
 
-
         PasswordVisibilityButton.Text =
             "◉";
-
 
         PasswordEntry.Focus();
     }
@@ -149,14 +144,11 @@ public partial class LoginPage : ContentPage
         if (_isLoggingIn)
             return;
 
-
         HideError();
-
 
         var mobile =
             MobileNumberEntry.Text?.Trim()
             ?? string.Empty;
-
 
         var password =
             PasswordEntry.Text
@@ -196,15 +188,17 @@ public partial class LoginPage : ContentPage
 
         try
         {
-            _isLoggingIn = true;
+            // =====================================================
+            // START LOADING
+            // =====================================================
 
+            _isLoggingIn = true;
 
             LoginButton.IsEnabled =
                 false;
 
-
-            LoginButton.Text =
-                "Signing in...";
+            LoginLoadingView.IsVisible =
+                true;
 
 
             // =====================================================
@@ -254,16 +248,16 @@ public partial class LoginPage : ContentPage
             // SAVE COMPLETE AUTH SESSION
             // =====================================================
             //
-            // AuthSessionService is the single source of truth
-            // for SecureStorage.
+            // This is critical.
             //
-            // It stores:
-            //   access token
-            //   refresh token
-            //   access token expiry
-            //   user information
-            //   client information
+            // AuthSessionService stores:
+            // - access token
+            // - refresh token
+            // - token expiry
+            // - user information
+            // - client information
             //
+            // Dashboard/App session validation depends on this.
             // =====================================================
 
             await _authSessionService.SaveSessionAsync(
@@ -278,7 +272,6 @@ public partial class LoginPage : ContentPage
                 await _authSessionService
                     .GetAccessTokenAsync();
 
-
             var savedRefreshToken =
                 await _authSessionService
                     .GetRefreshTokenAsync();
@@ -291,7 +284,6 @@ public partial class LoginPage : ContentPage
             {
                 await _authSessionService
                     .ClearSessionAsync();
-
 
                 ShowError(
                     "Login succeeded, but the authentication session could not be saved.");
@@ -334,15 +326,17 @@ public partial class LoginPage : ContentPage
         }
         finally
         {
-            _isLoggingIn = false;
+            // =====================================================
+            // STOP LOADING
+            // =====================================================
 
+            _isLoggingIn = false;
 
             LoginButton.IsEnabled =
                 true;
 
-
-            LoginButton.Text =
-                "Login  →";
+            LoginLoadingView.IsVisible =
+                false;
         }
     }
 
@@ -357,7 +351,6 @@ public partial class LoginPage : ContentPage
         ErrorLabel.Text =
             message;
 
-
         ErrorContainer.IsVisible =
             true;
     }
@@ -367,7 +360,6 @@ public partial class LoginPage : ContentPage
     {
         ErrorLabel.Text =
             string.Empty;
-
 
         ErrorContainer.IsVisible =
             false;

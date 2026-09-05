@@ -92,7 +92,7 @@ public partial class MilkDistributionPage : ContentPage
             DistributionRefreshView.IsRefreshing = true;
 
             var selectedDate =
-                DistributionDatePicker.Date ?? DateTime.Today;
+                (DistributionDatePicker.Date ?? DateTime.Today).Date;
 
             var selectedSession =
                 GetSelectedSessionCode();
@@ -1684,8 +1684,13 @@ public partial class MilkDistributionPage : ContentPage
             return;
         }
 
+        var selectedDate =
+            datePicker.Date ?? DateTime.Today;
+
         var distributionDate =
-            (datePicker.Date ?? DateTime.Today).Date;
+            DateTime.SpecifyKind(
+                selectedDate.Date,
+                DateTimeKind.Unspecified);
 
         try
         {
@@ -1926,7 +1931,7 @@ public partial class MilkDistributionPage : ContentPage
         // =========================================================
 
         var distributionDate =
-            datePicker.Date ?? DateTime.Today;
+            (datePicker.Date ?? DateTime.Today).Date;
 
         var selectedSession =
             sessionPicker.SelectedIndex == 0
@@ -2028,7 +2033,7 @@ public partial class MilkDistributionPage : ContentPage
             // =====================================================
 
             var refreshDate =
-                DistributionDatePicker.Date ?? DateTime.Today;
+                (DistributionDatePicker.Date ?? DateTime.Today).Date;
 
             var refreshSession =
                 GetSelectedSessionCode();
@@ -2120,7 +2125,7 @@ public partial class MilkDistributionPage : ContentPage
         try
         {
             var selectedDate =
-                DistributionDatePicker.Date ?? DateTime.Today;
+                (DistributionDatePicker.Date ?? DateTime.Today).Date;
 
             var selectedSession =
                 GetSelectedSessionCode();
@@ -2180,7 +2185,7 @@ public partial class MilkDistributionPage : ContentPage
             DistributionRefreshView.IsRefreshing = true;
 
             var date =
-                DistributionDatePicker.Date ?? DateTime.Today;
+                (DistributionDatePicker.Date ?? DateTime.Today).Date;
 
             var session =
                 GetSelectedSessionCode();
@@ -2213,42 +2218,7 @@ public partial class MilkDistributionPage : ContentPage
     }
 
 
-    private async Task ReloadDateOrSessionAsync()
-    {
-        if (_isLoading)
-        {
-            return;
-        }
-
-        try
-        {
-            var selectedDate =
-                DistributionDatePicker.Date ?? DateTime.Today;
-
-            var selectedSession =
-                GetSelectedSessionCode();
-
-            await LoadDistributionsAsync(
-                selectedDate,
-                selectedSession);
-
-            await LoadSummaryAsync(
-                selectedDate);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            await ShowSessionExpiredAsync(
-                ex.Message);
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlertAsync(
-                "Unable to Load",
-                ex.Message,
-                "OK");
-        }
-    }
-
+    
     // =========================================================
     // REFRESH
     // =========================================================
