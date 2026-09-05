@@ -267,7 +267,6 @@
                     HorizontalOptions="Center"
                     Margin="0,0,0,22">
 
-                    <!-- Green Circle -->
                     <Border
                         WidthRequest="64"
                         HeightRequest="64"
@@ -292,7 +291,6 @@
                     </Border>
 
 
-                    <!-- Ratif -->
                     <Label
                         Text="Desi Dudh"
                         FontFamily="OpenSansSemibold"
@@ -305,7 +303,6 @@
                         Margin="0,0,0,2" />
 
 
-                    <!-- Tagline -->
                     <Label
                         Text="Manage your dairy enterprise"
                         FontFamily="OpenSansRegular"
@@ -365,7 +362,6 @@
                                     ColumnDefinitions="28,*"
                                     VerticalOptions="Center">
 
-                                    <!-- Phone Icon -->
                                     <Label
                                         Grid.Column="0"
                                         Text="▯"
@@ -438,7 +434,6 @@
                                     ColumnDefinitions="28,*,42"
                                     VerticalOptions="Center">
 
-                                    <!-- Lock -->
                                     <Label
                                         Grid.Column="0"
                                         Text="▢"
@@ -460,7 +455,6 @@
                                         Completed="PasswordEntryCompleted" />
 
 
-                                    <!-- Password visibility -->
                                     <Button
                                         x:Name="PasswordVisibilityButton"
                                         Grid.Column="2"
@@ -512,21 +506,56 @@
                              LOGIN BUTTON
                         ========================================== -->
 
-                        <Button
-                            x:Name="LoginButton"
-                            HeightRequest="56"
-                            CornerRadius="12"
-                            BackgroundColor="{AppThemeBinding
-                                Light={StaticResource LoginPrimaryDarkLight},
-                                Dark={StaticResource LoginPrimaryDark}}"
-                            TextColor="{AppThemeBinding
-                                Light={StaticResource LoginCardLight},
-                                Dark={StaticResource LoginBackgroundDark}}"
-                            FontFamily="OpenSansSemibold"
-                            FontSize="15"
-                            FontAttributes="Bold"
-                            Text="Login  →"
-                            Clicked="LoginClicked" />
+                        <Grid
+                            HeightRequest="56">
+
+                            <!-- Normal Login Button -->
+                            <Button
+                                x:Name="LoginButton"
+                                HeightRequest="56"
+                                CornerRadius="12"
+                                BackgroundColor="{AppThemeBinding
+                                    Light={StaticResource LoginPrimaryDarkLight},
+                                    Dark={StaticResource LoginPrimaryDark}}"
+                                TextColor="{AppThemeBinding
+                                    Light={StaticResource LoginCardLight},
+                                    Dark={StaticResource LoginBackgroundDark}}"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="15"
+                                FontAttributes="Bold"
+                                Text="Login  →"
+                                Clicked="LoginClicked" />
+
+                            <!-- Loading State -->
+                            <HorizontalStackLayout
+                                x:Name="LoginLoadingView"
+                                IsVisible="False"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                Spacing="9"
+                                InputTransparent="True">
+
+                                <ActivityIndicator
+                                    IsRunning="True"
+                                    WidthRequest="20"
+                                    HeightRequest="20"
+                                    Color="{AppThemeBinding
+                                        Light={StaticResource LoginCardLight},
+                                        Dark={StaticResource LoginBackgroundDark}}" />
+
+                                <Label
+                                    Text="Signing in..."
+                                    FontFamily="OpenSansSemibold"
+                                    FontSize="15"
+                                    FontAttributes="Bold"
+                                    VerticalTextAlignment="Center"
+                                    TextColor="{AppThemeBinding
+                                        Light={StaticResource LoginCardLight},
+                                        Dark={StaticResource LoginBackgroundDark}}" />
+
+                            </HorizontalStackLayout>
+
+                        </Grid>
 
 
                         <!-- =========================================
@@ -600,7 +629,6 @@
 
                     <Grid>
 
-                        <!-- Soft dairy-style background -->
                         <Grid.Background>
                             <LinearGradientBrush
                                 StartPoint="0,0"
@@ -622,7 +650,6 @@
                         </Grid.Background>
 
 
-                        <!-- Decorative circles -->
                         <Ellipse
                             WidthRequest="180"
                             HeightRequest="180"

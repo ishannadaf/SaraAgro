@@ -40,4 +40,10 @@ public interface IReportsService
             DateTime fromDate,
             DateTime toDate,
             CancellationToken cancellationToken = default);
+
+    Task<FinancialSummaryResponse>
+    GetFinancialSummaryAsync(
+        int clientId,
+        DateTime date,
+        CancellationToken cancellationToken = default);
 }

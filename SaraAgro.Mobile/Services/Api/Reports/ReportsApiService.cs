@@ -270,6 +270,47 @@ public sealed class ReportsApiService
         return pdfBytes;
     }
 
+    // =========================================================
+    // FINANCIAL SUMMARY
+    // =========================================================
+
+    public async Task<FinancialSummaryResponse>
+        GetFinancialSummaryAsync(
+            DateTime date,
+            CancellationToken cancellationToken = default)
+    {
+        var url =
+            "api/Reports/financial-summary" +
+            $"?date={Uri.EscapeDataString(date.Date.ToString("yyyy-MM-dd"))}";
+
+        using var request =
+            new HttpRequestMessage(
+                HttpMethod.Get,
+                url);
+
+        await AddAuthorizationHeaderAsync(
+            request,
+            cancellationToken);
+
+        using var response =
+            await _httpClient.SendAsync(
+                request,
+                cancellationToken);
+
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content
+                .ReadFromJsonAsync<FinancialSummaryResponse>(
+                    JsonOptions,
+                    cancellationToken)
+                ?? throw new InvalidOperationException(
+                    "Invalid financial summary received from server.");
+        }
+
+        throw await CreateApiExceptionAsync(
+            response,
+            cancellationToken);
+    }
 
     // =========================================================
     // ALL PAYMENTS REPORT PDF
@@ -943,4 +984,31 @@ public sealed class PaymentReportRow
 
     public string Notes { get; set; } =
         string.Empty;
+}
+
+// =============================================================
+// FINANCIAL SUMMARY
+// =============================================================
+
+public sealed class FinancialSummaryResponse
+{
+    public DateTime Date { get; set; }
+
+    public decimal TodayRevenue { get; set; }
+
+    public decimal TodayCollection { get; set; }
+
+    public decimal TodayExpense { get; set; }
+
+    public decimal TodayProfit { get; set; }
+
+    public DateTime Month { get; set; }
+
+    public decimal MonthlyRevenue { get; set; }
+
+    public decimal MonthlyCollection { get; set; }
+
+    public decimal MonthlyExpense { get; set; }
+
+    public decimal MonthlyProfit { get; set; }
 }

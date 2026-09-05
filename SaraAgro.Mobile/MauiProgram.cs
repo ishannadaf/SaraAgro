@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SaraAgro.Mobile.Services.Api.Authentication;
 using SaraAgro.Mobile.Services.Api.Billing;
 using SaraAgro.Mobile.Services.Api.Customer;
+using SaraAgro.Mobile.Services.Api.Expenses;
 using SaraAgro.Mobile.Services.Api.MilkDistribution;
 using SaraAgro.Mobile.Services.Api.RateGroup;
 using SaraAgro.Mobile.Services.Api.RateMaster;
@@ -38,8 +39,10 @@ public static class MauiProgram
         // API BASE URL
         // =====================================================
 
+        //const string apiBaseUrl =
+        //    "https://saraagro-production.up.railway.app/";
         const string apiBaseUrl =
-            "https://saraagro-production.up.railway.app/";
+            "http://172.20.0.5:5000/";
 
 
         Console.WriteLine(
@@ -106,9 +109,16 @@ public static class MauiProgram
                     new Uri(apiBaseUrl);
             });
 
-
         builder.Services.AddHttpClient<
             ReportsApiService>(
+            client =>
+            {
+                client.BaseAddress =
+                    new Uri(apiBaseUrl);
+            });
+
+        builder.Services.AddHttpClient<
+            ExpenseApiService>(
             client =>
             {
                 client.BaseAddress =

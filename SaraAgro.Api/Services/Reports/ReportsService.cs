@@ -1029,6 +1029,194 @@ public class ReportsService : IReportsService
     }
 
     // =========================================================
+    // FINANCIAL SUMMARY
+    // =========================================================
+
+    public async Task<FinancialSummaryResponse>
+        GetFinancialSummaryAsync(
+            int clientId,
+            DateTime date,
+            CancellationToken cancellationToken = default)
+    {
+        var reportDate =
+            date.Date;
+
+        var nextDate =
+            reportDate.AddDays(1);
+
+        var monthStart =
+            new DateTime(
+                reportDate.Year,
+                reportDate.Month,
+                1);
+
+        var nextMonth =
+            monthStart.AddMonths(1);
+
+
+        // =====================================================
+        // TODAY'S REVENUE
+        //
+        // Revenue is based on milk distribution/billing amount.
+        // =====================================================
+
+        var todayRevenue =
+            await _dbContext.MilkDistributions
+                .AsNoTracking()
+                .Where(
+                    x =>
+                        x.ClientId == clientId &&
+                        x.DistributionDate >= reportDate &&
+                        x.DistributionDate < nextDate)
+                .SumAsync(
+                    x => x.Amount,
+                    cancellationToken);
+
+
+        // =====================================================
+        // TODAY'S COLLECTION
+        //
+        // Actual money received from customers.
+        // =====================================================
+
+        var todayCollection =
+            await _dbContext.BillPayments
+                .AsNoTracking()
+                .Where(
+                    x =>
+                        x.ClientId == clientId &&
+                        x.PaymentDate >= reportDate &&
+                        x.PaymentDate < nextDate)
+                .SumAsync(
+                    x => x.Amount,
+                    cancellationToken);
+
+
+        // =====================================================
+        // TODAY'S EXPENSE
+        // =====================================================
+
+        var todayExpense =
+            await _dbContext.Expenses
+                .AsNoTracking()
+                .Where(
+                    x =>
+                        x.ClientId == clientId &&
+                        x.ExpenseDate >= reportDate &&
+                        x.ExpenseDate < nextDate)
+                .SumAsync(
+                    x => x.Amount,
+                    cancellationToken);
+
+
+        // =====================================================
+        // TODAY'S PROFIT
+        // =====================================================
+
+        var todayProfit =
+            todayRevenue -
+            todayExpense;
+
+
+        // =====================================================
+        // MONTHLY REVENUE
+        // =====================================================
+
+        var monthlyRevenue =
+            await _dbContext.MilkDistributions
+                .AsNoTracking()
+                .Where(
+                    x =>
+                        x.ClientId == clientId &&
+                        x.DistributionDate >= monthStart &&
+                        x.DistributionDate < nextMonth)
+                .SumAsync(
+                    x => x.Amount,
+                    cancellationToken);
+
+
+        // =====================================================
+        // MONTHLY COLLECTION
+        // =====================================================
+
+        var monthlyCollection =
+            await _dbContext.BillPayments
+                .AsNoTracking()
+                .Where(
+                    x =>
+                        x.ClientId == clientId &&
+                        x.PaymentDate >= monthStart &&
+                        x.PaymentDate < nextMonth)
+                .SumAsync(
+                    x => x.Amount,
+                    cancellationToken);
+
+
+        // =====================================================
+        // MONTHLY EXPENSE
+        // =====================================================
+
+        var monthlyExpense =
+            await _dbContext.Expenses
+                .AsNoTracking()
+                .Where(
+                    x =>
+                        x.ClientId == clientId &&
+                        x.ExpenseDate >= monthStart &&
+                        x.ExpenseDate < nextMonth)
+                .SumAsync(
+                    x => x.Amount,
+                    cancellationToken);
+
+
+        // =====================================================
+        // MONTHLY PROFIT
+        // =====================================================
+
+        var monthlyProfit =
+            monthlyRevenue -
+            monthlyExpense;
+
+
+        // =====================================================
+        // RESPONSE
+        // =====================================================
+
+        return new FinancialSummaryResponse
+        {
+            Date =
+                reportDate,
+
+            TodayRevenue =
+                todayRevenue,
+
+            TodayCollection =
+                todayCollection,
+
+            TodayExpense =
+                todayExpense,
+
+            TodayProfit =
+                todayProfit,
+
+            Month =
+                monthStart,
+
+            MonthlyRevenue =
+                monthlyRevenue,
+
+            MonthlyCollection =
+                monthlyCollection,
+
+            MonthlyExpense =
+                monthlyExpense,
+
+            MonthlyProfit =
+                monthlyProfit
+        };
+    }
+
+    // =========================================================
     // ALL PAYMENTS
     // =========================================================
 

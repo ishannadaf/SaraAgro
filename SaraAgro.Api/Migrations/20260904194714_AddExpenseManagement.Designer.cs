@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SaraAgro.Api.Data;
 
@@ -11,9 +12,11 @@ using SaraAgro.Api.Data;
 namespace SaraAgro.Api.Migrations
 {
     [DbContext(typeof(SaraAgroDbContext))]
-    partial class SaraAgroDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260904194714_AddExpenseManagement")]
+    partial class AddExpenseManagement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

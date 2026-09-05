@@ -240,8 +240,13 @@ public sealed class ReportPdfService
     // DAILY REPORT PDF
     // =========================================================
 
+    // =========================================================
+    // DAILY REPORT PDF
+    // =========================================================
+
     public byte[] GenerateDailyReportPdf(
-        DailyReportResponse report)
+        DailyReportResponse report,
+        FinancialSummaryResponse financial)
     {
         var document =
             Document.Create(
@@ -268,7 +273,7 @@ public sealed class ReportPdfService
 
                                         header.Item()
                                             .AlignCenter()
-                                            .Text("Daily Milk Collection Report")
+                                            .Text("Daily Financial & Milk Collection Report")
                                             .Bold()
                                             .FontSize(13);
 
@@ -285,11 +290,61 @@ public sealed class ReportPdfService
                                 .Column(
                                     content =>
                                     {
-                                        // --------------------------------
-                                        // CUSTOMER TABLE
-                                        // --------------------------------
+                                        // ========================================
+                                        // FINANCIAL SUMMARY
+                                        // ========================================
 
                                         content.Item()
+                                            .Text("FINANCIAL SUMMARY")
+                                            .Bold()
+                                            .FontSize(10);
+
+                                        content.Item()
+                                            .PaddingTop(5)
+                                            .Table(
+                                                table =>
+                                                {
+                                                    table.ColumnsDefinition(
+                                                        columns =>
+                                                        {
+                                                            columns.RelativeColumn();
+                                                            columns.RelativeColumn();
+                                                            columns.RelativeColumn();
+                                                            columns.RelativeColumn();
+                                                        });
+
+                                                    AddSummaryCell(
+                                                        table,
+                                                        "Revenue",
+                                                        Currency(
+                                                            financial.TodayRevenue));
+
+                                                    AddSummaryCell(
+                                                        table,
+                                                        "Collection",
+                                                        Currency(
+                                                            financial.TodayCollection));
+
+                                                    AddSummaryCell(
+                                                        table,
+                                                        "Expense",
+                                                        Currency(
+                                                            financial.TodayExpense));
+
+                                                    AddSummaryCell(
+                                                        table,
+                                                        "Profit",
+                                                        Currency(
+                                                            financial.TodayProfit));
+                                                });
+
+
+                                        // ========================================
+                                        // CUSTOMER-WISE COLLECTION
+                                        // ========================================
+
+                                        content.Item()
+                                            .PaddingTop(18)
                                             .Text("CUSTOMER-WISE COLLECTION")
                                             .Bold()
                                             .FontSize(10);
@@ -343,7 +398,8 @@ public sealed class ReportPdfService
 
                                                         AddCell(
                                                             table,
-                                                            Currency(customer.TotalAmount));
+                                                            Currency(
+                                                                customer.TotalAmount));
                                                     }
 
                                                     AddTotalRow(
@@ -352,13 +408,14 @@ public sealed class ReportPdfService
                                                         $"{report.TotalCowQuantity:0.00}",
                                                         $"{report.TotalBuffaloQuantity:0.00}",
                                                         $"{report.TotalQuantity:0.00}",
-                                                        Currency(report.TotalAmount));
+                                                        Currency(
+                                                            report.TotalAmount));
                                                 });
 
 
-                                        // --------------------------------
+                                        // ========================================
                                         // SESSION SUMMARY
-                                        // --------------------------------
+                                        // ========================================
 
                                         content.Item()
                                             .PaddingTop(18)
@@ -387,33 +444,47 @@ public sealed class ReportPdfService
                                                     AddHeader(table, "Total L");
                                                     AddHeader(table, "Amount");
 
-                                                    AddCell(table, "Morning");
+                                                    AddCell(
+                                                        table,
+                                                        "Morning");
+
                                                     AddCell(
                                                         table,
                                                         $"{report.MorningCowQuantity:0.00}");
+
                                                     AddCell(
                                                         table,
                                                         $"{report.MorningBuffaloQuantity:0.00}");
+
                                                     AddCell(
                                                         table,
                                                         $"{report.MorningTotalQuantity:0.00}");
+
                                                     AddCell(
                                                         table,
-                                                        Currency(report.MorningAmount));
+                                                        Currency(
+                                                            report.MorningAmount));
 
-                                                    AddCell(table, "Evening");
+                                                    AddCell(
+                                                        table,
+                                                        "Evening");
+
                                                     AddCell(
                                                         table,
                                                         $"{report.EveningCowQuantity:0.00}");
+
                                                     AddCell(
                                                         table,
                                                         $"{report.EveningBuffaloQuantity:0.00}");
+
                                                     AddCell(
                                                         table,
                                                         $"{report.EveningTotalQuantity:0.00}");
+
                                                     AddCell(
                                                         table,
-                                                        Currency(report.EveningAmount));
+                                                        Currency(
+                                                            report.EveningAmount));
 
                                                     AddTotalRow(
                                                         table,
@@ -421,9 +492,14 @@ public sealed class ReportPdfService
                                                         $"{report.TotalCowQuantity:0.00}",
                                                         $"{report.TotalBuffaloQuantity:0.00}",
                                                         $"{report.TotalQuantity:0.00}",
-                                                        Currency(report.TotalAmount));
+                                                        Currency(
+                                                            report.TotalAmount));
                                                 });
 
+
+                                        // ========================================
+                                        // CUSTOMER COUNT
+                                        // ========================================
 
                                         content.Item()
                                             .PaddingTop(15)
@@ -438,9 +514,13 @@ public sealed class ReportPdfService
                                 .Text(
                                     text =>
                                     {
-                                        text.Span("Sara Agro  •  Daily Report  •  Page ");
+                                        text.Span(
+                                            "Sara Agro  •  Daily Report  •  Page ");
+
                                         text.CurrentPageNumber();
+
                                         text.Span(" / ");
+
                                         text.TotalPages();
                                     });
                         });
@@ -454,8 +534,13 @@ public sealed class ReportPdfService
     // MONTHLY REPORT PDF
     // =========================================================
 
+    // =========================================================
+    // MONTHLY REPORT PDF
+    // =========================================================
+
     public byte[] GenerateMonthlyReportPdf(
-        MonthlyReportResponse report)
+        MonthlyReportResponse report,
+        FinancialSummaryResponse financial)
     {
         var document =
             Document.Create(
@@ -482,7 +567,7 @@ public sealed class ReportPdfService
 
                                         header.Item()
                                             .AlignCenter()
-                                            .Text("Monthly Milk Collection Report")
+                                            .Text("Monthly Financial & Milk Collection Report")
                                             .Bold()
                                             .FontSize(13);
 
@@ -499,7 +584,67 @@ public sealed class ReportPdfService
                                 .Column(
                                     content =>
                                     {
+                                        // ========================================
+                                        // FINANCIAL SUMMARY
+                                        // ========================================
+
                                         content.Item()
+                                            .Text("FINANCIAL SUMMARY")
+                                            .Bold()
+                                            .FontSize(10);
+
+                                        content.Item()
+                                            .PaddingTop(5)
+                                            .Table(
+                                                table =>
+                                                {
+                                                    table.ColumnsDefinition(
+                                                        columns =>
+                                                        {
+                                                            columns.RelativeColumn();
+                                                            columns.RelativeColumn();
+                                                            columns.RelativeColumn();
+                                                            columns.RelativeColumn();
+                                                        });
+
+                                                    AddSummaryCell(
+                                                        table,
+                                                        "Revenue",
+                                                        Currency(
+                                                            financial.MonthlyRevenue));
+
+                                                    AddSummaryCell(
+                                                        table,
+                                                        "Collection",
+                                                        Currency(
+                                                            financial.MonthlyCollection));
+
+                                                    AddSummaryCell(
+                                                        table,
+                                                        "Expense",
+                                                        Currency(
+                                                            financial.MonthlyExpense));
+
+                                                    AddSummaryCell(
+                                                        table,
+                                                        "Profit",
+                                                        Currency(
+                                                            financial.MonthlyProfit));
+                                                });
+
+
+                                        // ========================================
+                                        // CUSTOMER-WISE MILK COLLECTION
+                                        // ========================================
+
+                                        content.Item()
+                                            .PaddingTop(18)
+                                            .Text("CUSTOMER-WISE MILK COLLECTION")
+                                            .Bold()
+                                            .FontSize(10);
+
+                                        content.Item()
+                                            .PaddingTop(5)
                                             .Table(
                                                 table =>
                                                 {
@@ -547,7 +692,8 @@ public sealed class ReportPdfService
 
                                                         AddCell(
                                                             table,
-                                                            Currency(customer.TotalAmount));
+                                                            Currency(
+                                                                customer.TotalAmount));
                                                     }
 
                                                     AddTotalRow(
@@ -556,11 +702,23 @@ public sealed class ReportPdfService
                                                         $"{report.CowQuantity:0.00}",
                                                         $"{report.BuffaloQuantity:0.00}",
                                                         $"{report.TotalQuantity:0.00}",
-                                                        Currency(report.TotalAmount));
+                                                        Currency(
+                                                            report.TotalAmount));
                                                 });
+
+
+                                        // ========================================
+                                        // MONTHLY COLLECTION SUMMARY
+                                        // ========================================
 
                                         content.Item()
                                             .PaddingTop(18)
+                                            .Text("MONTHLY COLLECTION SUMMARY")
+                                            .Bold()
+                                            .FontSize(10);
+
+                                        content.Item()
+                                            .PaddingTop(5)
                                             .Table(
                                                 table =>
                                                 {
@@ -599,7 +757,8 @@ public sealed class ReportPdfService
                                                     AddSummaryCell(
                                                         table,
                                                         "Total Amount",
-                                                        Currency(report.TotalAmount));
+                                                        Currency(
+                                                            report.TotalAmount));
                                                 });
                                     });
 
@@ -608,9 +767,13 @@ public sealed class ReportPdfService
                                 .Text(
                                     text =>
                                     {
-                                        text.Span("Sara Agro  •  Monthly Report  •  Page ");
+                                        text.Span(
+                                            "Sara Agro  •  Monthly Report  •  Page ");
+
                                         text.CurrentPageNumber();
+
                                         text.Span(" / ");
+
                                         text.TotalPages();
                                     });
                         });
